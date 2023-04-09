@@ -1,7 +1,7 @@
 from flask      import render_template, make_response
 from flask.app  import Flask
 
-from readSession import readSession
+from read_session import read_session
 
 def Pages(app: Flask, db):
     @app.get('/')
@@ -19,10 +19,10 @@ def Pages(app: Flask, db):
     @app.get('/signup')
     def signup():
         return render_template('User/signup.html')
-    
+
     @app.get('/signout')
     def signout():
-        user = readSession(db)
+        user = read_session(db)
         if not user:
             return render_template('User/signin.html')
 
@@ -32,7 +32,7 @@ def Pages(app: Flask, db):
 
     @app.get('/account')
     def userAccount():
-        user = readSession(db)
+        user = read_session(db)
         if not user:
             return render_template("User/signin.html")
         return render_template('User/account.html', user=user)

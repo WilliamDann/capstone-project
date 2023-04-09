@@ -11,16 +11,16 @@ def UserRoutes(app: Flask, db: Database):
         password = request.form.get('password')
 
         if not username:
-            return render_template("error.html", error="Username not provided"), 400
+            return render_template("Error.html", error="Username not provided"), 400
         if not password:
-            return render_template("error.html", error="Password not provided"), 400
+            return render_template("Error.html", error="Password not provided"), 400
 
         storedUser = db['users'].find_one({"username": username})
         if not storedUser:
-            return render_template("error.html", error="Authentication error"), 400
+            return render_template("Error.html", error="Authentication error"), 400
 
         if storedUser['pwHash'] != sha256(password.encode('utf-8')).hexdigest():
-            return render_template("error.html", error="Authentication error"), 400
+            return render_template("Error.html", error="Authentication error"), 400
 
         token = uuid4().hex
         db['sessions'].insert_one( { "username": username, "token": token } )
