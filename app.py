@@ -1,7 +1,9 @@
-from flask import Flask
+from flask              import Flask
+from GetDatabase        import GetDatabase
 
-app = Flask(__name__)
+from routes.UserRoutes  import UserRoutes
 
-@app.get('/')
-def test():
-    return "Hello, World!"
+app = Flask(__name__)       # Create Flask app
+db  = GetDatabase()         # Connect to MongoDB database
+
+UserRoutes(app, db)         # Create User HTTP Rotues
