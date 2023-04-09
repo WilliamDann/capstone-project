@@ -1,1 +1,1 @@
-# LWTech capstone project
+# LWTech Capstone Project
