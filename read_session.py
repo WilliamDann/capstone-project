@@ -1,7 +1,7 @@
 from flask              import request
 from pymongo.database   import Database
 
-def readSession(db: Database):
+def read_session(db: Database):
     token = request.cookies.get('session')
     if not token:
         return None
