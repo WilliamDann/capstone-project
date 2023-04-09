@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+
+<head>
+    {% block head %}
+
+    <title>{% block title %}{% endblock %}</title>
+
+    <!-- static imports  -->
+    <link rel="stylesheet" href="static/style.css">
+    <script type="text/javascript" href="static/page.js"></script>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    {% endblock %}
+</head>
+
+<body>
+    <header class="bg-white" style="position: relative; z-index: 10; background-color: transparent;">
+        {% block header %}
+        <nav class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8" aria-label="Global">
+            <a href="/" class="text-sm font-semibold leading-6 text-blue-900">← Home Page</a>
+        </nav>
+        {% endblock %}
+    </header>
+
+    <main>
+        {% block main %}
+
+        {% endblock %}
+    </main>
+
+    <footer>
+        {% block footer %}
+
+        {% endblock %}
+    </footer>
+</body>
