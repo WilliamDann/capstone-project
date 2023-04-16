@@ -1,8 +1,9 @@
-from model.Tile  import Tile
-from model.World import World
-from random      import choice
-from logging     import info
-from time        import sleep
+from model.Tile       import Tile
+from model.World      import World
+from random           import choice
+from logging          import info
+from time             import sleep
+from pymongo.database import Database
 
 class Game:
     time    : int
@@ -24,7 +25,7 @@ class Game:
         self.time += 1
         info(f'Tick {self.time} Complete')
 
-def gameThread(game: Game):
+def gameThread(db: Database, game: Game):
     while True:
         game.tick()
         sleep(1)
