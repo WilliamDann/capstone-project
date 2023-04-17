@@ -31,3 +31,6 @@ class World:
         objId = uuid4()
         self.objects[objId] = obj
         return objId
+
+    def findObjects(self, f: function) -> "list[Object]":
+        return list(filter(f, self.objects.values()))
