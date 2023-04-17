@@ -1,9 +1,10 @@
 from flask              import Flask
 from get_database       import get_database
 
-from routes.UserRoutes  import UserRoutes
-from routes.Pages       import Pages
 from Game               import Game, gameThread
+from routes.UserRoutes  import UserRoutes
+from routes.GameRoutes  import GameRoutes
+from routes.Pages       import Pages
 
 from threading          import Thread
 import logging
@@ -27,4 +28,5 @@ logging.info("Started game thread.")
 app = Flask(__name__)       # Create Flask app
 
 UserRoutes(app, db)         # Create User HTTP Rotues
+GameRoutes(app, db, game)
 Pages(app, db)              # Create routes for html Pages

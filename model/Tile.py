@@ -1,9 +1,10 @@
 from model.Objects.Object import Object
+from model.Objects.Ship   import Ship
+from model.Objects.Station import Station
 
 class Tile:
     name    : str
-    objects : "list[Object]"
+    size    : int = 64
 
     def __init__(self, name: str) -> None:
         self.name    = name
-        self.objects = []

@@ -1,5 +1,6 @@
 from flask              import request
 from pymongo.database   import Database
+from model.User         import User
 
 def read_session(db: Database):
     token = request.cookies.get('session')
