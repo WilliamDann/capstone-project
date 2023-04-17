@@ -21,7 +21,6 @@ class Game:
             self.world.addEdge(self.world.tiles[tile], other)
 
     def tick(self):
-        info(f'Starting tick {self.time+1}')
         self.time += 1
         info(f'Tick {self.time} Complete')
 
