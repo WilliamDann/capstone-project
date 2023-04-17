@@ -29,8 +29,12 @@ class World:
 
     def addObject(self, obj: Object):
         objId = uuid4()
+        obj.objId           = objId
         self.objects[objId] = obj
         return objId
 
-    def findObjects(self, f: function) -> "list[Object]":
+    def findObjects(self, f) -> "list[Object]":
         return list(filter(f, self.objects.values()))
+
+    def findTiles(self, f) -> "list[Tile]":
+        return list(filter(f, self.tiles.values()))
