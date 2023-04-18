@@ -24,12 +24,20 @@
     </header>
 
     <main>
-        <div>
-            <p>
-                {{ msg }}
-
-            </p>
+        <!-- Info message from server -->
+        {% if info %}
+        <div id="msgbox" class="opacity-70 overflow-hidden bg-blue-400 shadow sm:rounded-lg items-center justify-between p-6 lg:px-8"">
+            {{info}}
         </div>
+        {% endif %}
+
+        <!-- Error message from server -->
+        {% if error %}
+        <div id="msgbox" class="opacity-70 overflow-hidden bg-red-400 shadow sm:rounded-lg items-center justify-between p-6 lg:px-8"">
+            {{error}}
+        </div>
+        {% endif %}
+
         {% block main %}
 
         {% endblock %}

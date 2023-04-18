@@ -37,16 +37,16 @@ def UserRoutes(app: Flask, db: Database):
         password = request.form.get('password')
 
         if not username:
-            return render_template("User/signup.html", msg = "Username required")
+            return render_template("User/signup.html", error="Username required"), 400
         if db['users'].find_one({'username': username}):
-            return render_template("User/signup.html", msg = "Username already exists")
+            return render_template("User/signup.html", error="Username already exists"), 400
         if not password:
-            return render_template("User/signup.html", msg = "password required")
+            return render_template("User/signup.html", error="Password required"), 400
 
         hashedPassword = sha256(password.encode('utf-8')).hexdigest()
 
         db['users'].insert_one({ "username": username, "pwHash": hashedPassword })
-        return render_template("User/signin.html", msg = "SUCCESS!")
+        return render_template("User/signin.html", info="User creation successful, please sign in")
 
     @app.get('/api/user')
     def userRead():
