@@ -3,6 +3,7 @@ from flask.app          import Flask
 from pymongo.database   import Database
 from hashlib            import sha256
 from uuid               import uuid4
+from read_session       import read_session
 
 def UserRoutes(app: Flask, db: Database):
     @app.post('/api/user/auth')
@@ -68,6 +69,8 @@ def UserRoutes(app: Flask, db: Database):
         username = request.form.get('username')
         currentPassword = request.form.get('currentPassword')
         newPassword = request.form.get('newPassword')
+        if read_session(db).get('username') != username:
+            return render_template("Error.html", error="Authentication error"), 400            
         if not username:
             return render_template("User/changepass.html", error="Username not provided"), 400
         if not currentPassword:
