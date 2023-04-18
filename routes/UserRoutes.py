@@ -3,6 +3,7 @@ from flask.app          import Flask
 from pymongo.database   import Database
 from hashlib            import sha256
 from uuid               import uuid4
+from read_session       import read_session
 
 def UserRoutes(app: Flask, db: Database):
     @app.post('/api/user/auth')
@@ -63,9 +64,28 @@ def UserRoutes(app: Flask, db: Database):
         found['pwHash'] = None
         return jsonify(found), 200
 
-    @app.put('/api/user')
+    @app.post('/api/user/update')
     def userUpdate():
-        return "NOT IMPLEMENTED", 500
+        username = request.form.get('username')
+        currentPassword = request.form.get('currentPassword')
+        newPassword = request.form.get('newPassword')
+        if read_session(db).get('username') != username:
+            return render_template("Error.html", error="Authentication error"), 400            
+        if not username:
+            return render_template("User/changepass.html", error="Username not provided"), 400
+        if not currentPassword:
+            return render_template("User/changepass.html", msg = "password required")
+        if not newPassword:
+            return render_template("User/changepass.html", msg = "password required")
+        storedUser = db['users'].find_one({"username": username})
+        if not storedUser:
+            return render_template("User/changepass.html", error="Incorrect username"), 400
+        if storedUser['pwHash'] != sha256(currentPassword.encode('utf-8')).hexdigest():
+            return render_template("Error.html", error="Authentication error"), 400
+        hashedPassword = sha256(newPassword.encode('utf-8')).hexdigest()
+        db['users'].update_one({ "username": username }, { "$set": { "pwHash": hashedPassword } })
+        hashedPassword = None
+        return render_template("User/account.html", user = username)
 
     @app.delete('/api/user')
     def userDelete():

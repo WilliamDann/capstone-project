@@ -36,3 +36,10 @@ def Pages(app: Flask, db):
         if not user:
             return render_template("User/signin.html")
         return render_template('User/account.html', user=user)
+    
+    @app.get('/changepass')
+    def changePass():
+        user = read_session(db)
+        if not user:
+            return render_template("User/signin.html")
+        return render_template('User/changepass.html', user=user)
