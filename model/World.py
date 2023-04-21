@@ -28,7 +28,7 @@ class World:
         self.edges[to.name]  = filter(lambda x: x != frm.name, self.edges[to.name])
 
     def addObject(self, obj: Object):
-        objId = uuid4()
+        objId = uuid4().hex
         obj.objId           = objId
         self.objects[objId] = obj
         return objId
