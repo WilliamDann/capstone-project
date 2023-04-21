@@ -8,10 +8,6 @@ def Pages(app: Flask, db):
     def home():
         return render_template('home.html')
 
-    @app.get('/play')
-    def play():
-        return render_template('play.html')
-
     @app.get('/signin')
     def signin():
         return render_template('User/signin.html')
