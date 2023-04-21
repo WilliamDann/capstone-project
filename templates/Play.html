@@ -1,9 +1,14 @@
 {% extends "partials/layout.html" %}
 
+{% block footer %}
+<script src="/static/canvas.js"></script>
+{% endblock %}
+
 {% block title %}
 Play
 {% endblock %}
 
 {% block main %}
-<p>Play Page</p>
+<p class="">Play Page</p>
+<canvas width="1000" height="500" class="border-2" id="gameCanvas"></canvas>
 {% endblock %}
