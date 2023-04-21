@@ -9,6 +9,13 @@ Play
 {% endblock %}
 
 {% block main %}
+<script>
+let dataStr = "{{game}}"
+dataStr     = dataStr.replaceAll('&#34;', '"');
+const data  = JSON.parse(dataStr);
+console.log(data);
+
+</script>
 <p class="">Play Page</p>
 <canvas width="1000" height="500" class="border-2" id="gameCanvas"></canvas>
 {% endblock %}

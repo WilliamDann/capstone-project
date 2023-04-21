@@ -8,7 +8,5 @@ function drawObject(ctx, x, y, size) {
 }
 
 const ctx = getCanvas();
-
 drawObject(ctx, 30, 30, 10);
-
 ctx.stroke();
