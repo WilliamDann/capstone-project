@@ -26,7 +26,7 @@ def Pages(app: Flask, db):
         if not user:
             return render_template('User/signin.html')
 
-        resp = make_response(render_template('User/signin.html'))
+        resp = make_response(render_template('User/signin.html', info="Signout successful."))
         resp.set_cookie('session', '', expires=0)
         return resp
 
