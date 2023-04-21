@@ -64,6 +64,7 @@ def UserRoutes(app: Flask, db: Database):
         found['pwHash'] = None
         return jsonify(found), 200
 
+    @app.put('/api/user')
     @app.post('/api/user/update')
     def userUpdate():
         username = request.form.get('username')
@@ -87,6 +88,23 @@ def UserRoutes(app: Flask, db: Database):
         hashedPassword = None
         return render_template("User/account.html", user = username)
 
+    @app.post('/api/user/delete')
     @app.delete('/api/user')
     def userDelete():
-        return "NOT IMPLEMENTED", 500
+        username = request.form.get('username')
+        session  = read_session(db)
+
+        if not username:
+            return render_template("Error.html", error="username is required to delete a user")
+        
+        if not session or not session.get('username'):
+            return render_template("Error.html", error="Authentication Error"), 400
+        if session.get('username') != username:
+            return render_template("Error.html", error="Authentication Error"), 400
+        
+        # Delete user and user sign in sessions
+        db['users'].delete_one({'username': session.get('username')})
+        db['sessions'].delete_many({'username': session.get('username')})
+
+        return render_template("User/signin.html", info="User deleted."), 200
+        
