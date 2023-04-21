@@ -17,8 +17,6 @@ logging.info("Loaded mongo db.")
 # TODO load & save game world
 game = Game()
 game.makeWorld(10)
-logging.debug(game.world.tiles)
-logging.debug(game.world.edges)
 logging.info("Game world loaded.")
 
 gameThread = Thread(target=gameThread, args=(db, game,), daemon=True)

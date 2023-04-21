@@ -12,7 +12,6 @@ from json                       import dumps
 from read_session import read_session
 
 def dict_decode(inst):
-    logging.debug(inst.__dict__)
     return inst.__dict__
 
 def GameRoutes(app: Flask, db: Database, game: Game):
