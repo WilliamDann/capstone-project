@@ -8,10 +8,6 @@ def Pages(app: Flask, db):
     def home():
         return render_template('home.html')
 
-    @app.get('/play')
-    def play():
-        return render_template('play.html')
-
     @app.get('/signin')
     def signin():
         return render_template('User/signin.html')
@@ -26,7 +22,7 @@ def Pages(app: Flask, db):
         if not user:
             return render_template('User/signin.html')
 
-        resp = make_response(render_template('User/signin.html'))
+        resp = make_response(render_template('User/signin.html', info="Signout successful."))
         resp.set_cookie('session', '', expires=0)
         return resp
 
@@ -43,3 +39,10 @@ def Pages(app: Flask, db):
         if not user:
             return render_template("User/signin.html")
         return render_template('User/changepass.html', user=user)
+    
+    @app.get('/User/delete')
+    def deleteUserConfirm():
+        user = read_session(db)
+        if not user:
+            return render_template("User/signin.html")
+        return render_template("User/delete.html", user=user)

@@ -1,5 +1,5 @@
 import logging
-from flask                      import render_template, request, jsonify
+from flask                      import render_template, request
 from flask.app                  import Flask
 from pymongo.database           import Database
 from model.Components.Position  import Position
@@ -7,31 +7,21 @@ from model.Objects.Station      import Station
 from model.Objects.Ship         import Ship
 from Game                       import Game
 from random                     import randint
+from json                       import dumps
 
 from read_session import read_session
 
+def dict_decode(inst):
+    return inst.__dict__
+
 def GameRoutes(app: Flask, db: Database, game: Game):
+    @app.get('/play')
+    def playPage():
+        return render_template('Play.html', game=dumps(game.__dict__, default=dict_decode))
+
     @app.get('/api/game/')
-    def getTile():
-        user = read_session(db)
-        if not user:
-            return render_template("Error.html", error="Authentication error"), 400
-
-        # Get ids of all the user's ships and stations
-        userShips       = game.world.findObjects(lambda x: x.owner == user['username'] and type(x) == Ship)
-        userStations    = game.world.findObjects(lambda x: x.owner == user['username'] and type(x) == Station)
-        for i in range(len(userShips)):
-            userShips[i] = userShips[i].objId
-        for i in range(len(userStations)):
-            userStations[i] = userStations[i].objId
-
-        data = {
-            'Tiles'     : list(game.world.tiles.keys()),
-            'Ships'     : list(userShips),
-            'Stations'  : list(userStations)
-        }
-
-        return jsonify(data), 200
+    def getGame():
+        return dumps(game.__dict__, default=dict_decode), 200
 
     @app.post('/api/game/join')
     def joinGame():
