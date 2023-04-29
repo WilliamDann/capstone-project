@@ -5,7 +5,7 @@ class Asteroid(Object):
     resourceType: ResourceType
 
     def __init__(self, rtype: ResourceType, amount: int) -> None:
-        super().__init__()
+        super().__init__("Asteroid")
 
         self.storage.totalSpace  = amount
         self.storage[rtype]     += amount

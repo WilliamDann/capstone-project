@@ -10,7 +10,7 @@ class Ship(Object):
     _mineAmount  : int                  # The amount mined per mine() tick. (should be replaced later with a component system)
 
     def __init__(self) -> None:
-        super().__init__()
+        super().__init__("Ship")
         self._mineAmount  = 10
         self._moveAmount = 2
 
