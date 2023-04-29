@@ -1,7 +1,7 @@
 from model.Components.Position  import Position
 from model.Objects.Object       import Object
 from model.Objects.Asteroid     import Asteroid
-from model.Error                import Error
+from model.ReturnCode           import ReturnCode
 
 class Ship(Object):
     _actionRange : int                  # Range actions can be taken in
@@ -14,17 +14,17 @@ class Ship(Object):
         self._mineAmount  = 10
         self._moveAmount = 2
 
-    def mine(self, target: Asteroid) -> Error:
+    def mine(self, target: Asteroid) -> ReturnCode:
         if self.position.dist(target) > self._actionRange:
-            return Error.NotInRange
+            return ReturnCode.NotInRange
 
         # Withdraw resource from target if resource avalible
         if not target.storage.withdraw(target.resourceType, self._mineAmount):
             target.storage.deopsit(target.resourceType, self._mineAmount)
-            return Error.ResourceMissing
+            return ReturnCode.ResourceMissing
 
         # Deposit resource into ship if storage space avalible
         if not self.storage.deopsit(target.resourceType, self._mineAmount):
-            return Error.StorageFull
+            return ReturnCode.StorageFull
 
-        return Error.Ok
+        return ReturnCode.Ok
