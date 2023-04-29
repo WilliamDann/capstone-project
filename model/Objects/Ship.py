@@ -20,7 +20,6 @@ class Ship(Object):
 
         # Withdraw resource from target if resource avalible
         if not target.storage.withdraw(target.resourceType, self._mineAmount):
-            target.storage.deopsit(target.resourceType, self._mineAmount)
             return ReturnCode.ResourceMissing
 
         # Deposit resource into ship if storage space avalible
