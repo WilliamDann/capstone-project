@@ -99,8 +99,6 @@ function draw(data, c) {
     c.fillRect(0, 0, 1000, 500, c);
     let stars = Math.random() * 1000;
     let s = makeStars(stars);
-    let xMod = 1000/64;
-    let yMod = 500/64;
     for(let i = 0; i < s.length; i++){
         const next = s[i];
         var x = next.x;
@@ -112,13 +110,15 @@ function draw(data, c) {
             ship(objId, c);
         }
         if(objId.objType == "Station"){
-            station(objID, c);
+            station(objId, c);
         }
         if(objId.objType == "Asteroid"){
-            asteroid(objID, c);
+            asteroid(objId, c);
         }
     }
 }
+const xMod = 1000/64;
+const yMod = 500/64;
 const c = getCanvas();
 fetch('/api/game').then(response => response.json()).then(json => {
     let data = json;
