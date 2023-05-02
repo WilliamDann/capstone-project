@@ -1,24 +1,46 @@
+from api.ReturnCode             import ReturnCode
 from api.tokens.Token           import Token
+
 from model.Object               import Object
 from model.Components.Position  import Position
+from model.World                import World
 
+# Token to move an object in the game world
 class MoveToken(Token):
+    obj     : Object
+    target  : Position
+
     def __init__(self, obj: Object, target: "Position|Object") -> None:
+        self.obj    = obj
+
+        # Ensure that 'target' is a Position
+        if isinstance(target, Object):
+            target = target.position
+        self.target = target
+
         super().__init__()
 
-    def validate(self) -> bool:
-        # Ensure that 'to' is a Position
-        if isinstance(to, Object):
-            to = to.position
-        if not isinstance(to, Position):
-            return False
-
-        # Ensure that 'obj' has move parts
-        # TODO parts need to be implemented
-
-        return True 
-
-    def action(self):
+    def action(self, world: World):
         # TODO move speed based on body parts
-        moveSpeed = 1
-        pass
+        # TODO pathfinding? what if it runs into something, for example
+
+        moveSpeed   = 1
+        obj         = world.objects.get(self.obj.objId)
+
+        if not obj:
+            return ReturnCode.InvalidArgs
+
+        xDiff = obj.position.x - self.target.x
+        yDiff = obj.position.y - self.target.y
+
+        if xDiff >= 0:
+            obj.position.x += min(moveSpeed, xDiff)
+        else:
+            obj.position.x -= max(-moveSpeed, xDiff)
+
+        if yDiff >= 0:
+            obj.position.y += min(moveSpeed, yDiff)
+        else:
+            obj.position.y -= max(-moveSpeed, yDiff)
+
+        return ReturnCode.Ok
