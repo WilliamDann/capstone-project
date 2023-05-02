@@ -1,5 +1,5 @@
 from api.tokens.Token           import Token
-from model.Objects.Object       import Object
+from model.Object               import Object
 from model.Components.Position  import Position
 
 class MoveToken(Token):
