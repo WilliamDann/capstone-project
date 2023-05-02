@@ -1,6 +1,8 @@
-function getCanvas(elem) {
+function getCanvas() {
+    const elem = document.querySelector('#gameCanvas');
     return elem.getContext('2d');
 }
+
 function makeStars(count, xMin, xMax, yMin, yMax) {
     const out = [];
     for (let i = 0; i < count; i++) {
@@ -97,9 +99,12 @@ function asteroid(objID, c) {
     c.fill();
     c.stroke();
 }
-function draw(data, tile, c) {
+function drawTile(data, tile, c) {
     //obj = Object.values(data.world.objects).filter(x => x.position.tileName == tileName);
-    inTile = true;
+    canvasState = 'tile';
+    c.clearRect(0, 0, 9999, 9999);
+    c.stroke();
+
     c.fillStyle = 'black';
     c.fillRect(0, 0, 1000, 500, c);
     let stars = Math.random() * 1000;
@@ -119,83 +124,105 @@ function draw(data, tile, c) {
         }
     }
 }
-function drawMapTile(tile, numTiles, c) {
-    let xTiles = Math.ceil(numTiles / Math.floor(numTiles / 4)) + 1;
-    let yTiles = Math.floor(numTiles / 4);
-    let xStep = XMax / xTiles;
-    let yStep = YMax / yTiles;
-    let yPos = 0;
-    let xPos = 0;
-    if (mapTilePos.size >= xTiles) {
-        yPos = 1;
-        xPos = mapTilePos.size - xTiles;
-    }
-    else {
-        yPos = 0;
-        xPos = mapTilePos.size;
-    }
-    let x = 0;
-    if (yPos != 0) {
-        x = xPos * xStep + xStep;
-    }
-    else x = xPos * xStep + xStep / 2;
-    let y = yPos * yStep + yStep / 2;
-    let r = xStep / 3;
-    mapTilePos.set(tile, {
-        x: x,
-        y: y,
-        r: r
-    });
-    drawTile(tile, c)
-}
-function drawTile(tile, c) {
+
+function drawMapTileConnection(x, y, toX, toY)
+{
+    let c =  getCanvas();
+
     c.beginPath();
-    let temp = mapTilePos.get(tile);
-    c.arc(temp.x, temp.y, temp.r, 0, Math.PI * 2);
+    c.moveTo(x, y);
+    c.lineTo(toX, toY);
+    c.stroke();
+}
+
+function drawMapTile(x, y, radius, name) {
+    let c = getCanvas();
+
+    c.beginPath();
+    c.arc(x, y, radius, 0, Math.PI * 2);
     c.fillStyle = 'black';
     c.fill();
-    let s = makeStars(25, temp.x - temp.r, temp.x + temp.r, temp.y - temp.r, temp.y + temp.r);
+
+    let s = makeStars(25, x - radius, x + radius, y - radius, y + radius);
+
     star(s, c);
-    c.font = "25px Caveat";
-    c.fillText(tile.name, temp.x - temp.r, temp.y + 5);
+    c.font = "15px Caveat";
+    c.fillText(name, x - radius, y + 5);
 }
+
+function drawMapGraph(radius, edges) {
+    const set = {};
+
+    // add tile to the set
+    let union = (tile) => 
+    {
+        let angle       = Math.random()*Math.PI*2;
+        let tileRadius  = (Math.random() * radius) + (radius / 3);
+        let x           = (Math.cos(angle)*tileRadius) + (radius * 2);
+        let y           = (Math.sin(angle)*tileRadius) + (radius * 2);
+
+        let drawnTileRadius = 20;
+        drawMapTile(x, y, drawnTileRadius, tile)
+        set[tile] = {name: tile, x: x, y: y, r: drawnTileRadius}
+        mapTilePos.set(tile, set[tile]); // update click map
+    }
+
+    for (let tile in edges)
+    {
+        if (!set[tile])
+            union(tile);
+
+        for (let edge of edges[tile])
+        {
+            if (set[edge])
+            {
+                drawMapTileConnection(set[tile].x, set[tile].y, set[edge].x, set[edge].y);
+                // TODO pull tiles closer togther
+                continue;
+            }
+
+            union(edge)
+        }
+    }
+}
+
+let canvasState = 'map'; // 'map', 'tile'
+
 const elem = document.querySelector('#gameCanvas');
 const XMax = 1000;
 const YMax = 500;
 const XMod = XMax / 64;
 const YMod = YMax / 64;
-const c = getCanvas(elem);
+const c = getCanvas();
 const OffsetX = elem.offsetLeft;
 const OffsetY = elem.offsetTop;
 let mapTilePos = new Map();
-let inTile = false;
+
 fetch('/api/game').then(response => response.json()).then(json => {
     let data = json;
-    console.log(data);
-    let count = 0;
-    for (let e of Object.values(data.world.edges)) {
-        count++;
-    }
-    for (let e of Object.values(data.world.tiles)) {
-        drawMapTile(e, count, c);
-    }
+
+    canvasState = 'map';
+    drawMapGraph(200, data.world.edges)
+
     window.addEventListener('click', function (event) {
-        if (!inTile) {
+        if (canvasState == 'map') {
             x = parseInt(event.clientX - OffsetX);
             y = parseInt(event.clientY - OffsetY);
             console.log(x, y);
             for (let e of mapTilePos.keys()) {
-                console.log(e.name);
+                console.log(mapTilePos.get(e).name);
                 xMin = mapTilePos.get(e).x - mapTilePos.get(e).r;
                 xMax = mapTilePos.get(e).x + mapTilePos.get(e).r;
                 yMin = mapTilePos.get(e).y - mapTilePos.get(e).r;
                 yMax = mapTilePos.get(e).y + mapTilePos.get(e).r;
-                if ((x < xMax && x > xMin) && (y < yMax && y > yMin)) draw(data, e.name, c);
+                if ((x < xMax && x > xMin) && (y < yMax && y > yMin))
+                {
+                    console.log(`drawing tile ${mapTilePos.get(e).name}`);
+                    drawTile(data, mapTilePos.get(e).name, c);
+                }
             }
         }
     })
-    console.log(mapTilePos);
-    //draw(data, c);
 })
 
 //TODO add map drawing function and onclick to select tiles.

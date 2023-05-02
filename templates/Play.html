@@ -14,11 +14,18 @@ Play
     dataStr = dataStr.replaceAll('&#34;', '"');
     const data = JSON.parse(dataStr);
     console.log(data);
+
+    function mapButtonClick()
+    {
+        // TODO toggle back to current tile if on map
+        let c = getCanvas();
+        c.clearRect(0, 0, 9999, 9999);
+        c.stroke();
+        drawMapGraph(200, data.world.edges)
+    }
 </script>
 <p class="">Play Page</p>
-<button onclick = "console.log('tacots')">Map</button>
-<canvas width="1000" height="500" class="border-2" id="gameCanvas"></canvas>
-
-    
+<button onclick = "mapButtonClick()">Map</button>
+<canvas width="1000" height="1000" class="border-2" id="gameCanvas"></canvas>
 
 {% endblock %}
