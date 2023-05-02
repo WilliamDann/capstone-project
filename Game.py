@@ -28,4 +28,24 @@ class Game:
 def gameThread(db: Database, game: Game):
     while True:
         game.tick()
-        sleep(1)
+
+        userList = db['users'].find( {} )
+        for user in userList:
+            username = user.get('username')
+            userCode = user.get("userCode")
+
+            if not username or not userCode:
+                continue
+
+            # This code is responsible for executing user python code
+            # This is basically a remote code execution vulnerability baked into our app
+            # DO NOT TOUCH THIS UNLESS YOU KNOW WHAT YOU ARE DOING. 
+            try:
+                exec(userCode,                  \
+                    {"__builtins__": None},     \
+                    {}
+                )
+            except Exception as e:
+                pass
+
+        sleep(5)

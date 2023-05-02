@@ -6,6 +6,18 @@ from uuid               import uuid4
 from read_session       import read_session
 
 def UserRoutes(app: Flask, db: Database):
+    @app.post('/api/user/updateCode')
+    def updateCode():
+        code    = request.form.get('userCode')
+        session = read_session(db)
+        if not session or not session.get('username'):
+            return render_template("Error.html", error="Authentication error"), 400
+        if not code:
+            return render_template("Error.html", error="No userCode provided"), 400
+
+        db['users'].update_one({ 'username': session.get('username') }, { '$set': { 'userCode': code } })
+        return render_template('Home.html', info="User Updated.")
+
     @app.post('/api/user/auth')
     def authUser():
         username = request.form.get('username')
@@ -71,7 +83,7 @@ def UserRoutes(app: Flask, db: Database):
         currentPassword = request.form.get('currentPassword')
         newPassword = request.form.get('newPassword')
         if read_session(db).get('username') != username:
-            return render_template("Error.html", error="Authentication error"), 400            
+            return render_template("Error.html", error="Authentication error"), 400
         if not username:
             return render_template("User/changepass.html", error="Username not provided"), 400
         if not currentPassword:
@@ -96,15 +108,14 @@ def UserRoutes(app: Flask, db: Database):
 
         if not username:
             return render_template("Error.html", error="username is required to delete a user")
-        
+
         if not session or not session.get('username'):
             return render_template("Error.html", error="Authentication Error"), 400
         if session.get('username') != username:
             return render_template("Error.html", error="Authentication Error"), 400
-        
+
         # Delete user and user sign in sessions
         db['users'].delete_one({'username': session.get('username')})
         db['sessions'].delete_many({'username': session.get('username')})
 
         return render_template("User/signin.html", info="User deleted."), 200
-        
