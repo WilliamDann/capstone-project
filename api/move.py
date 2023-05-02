@@ -1,5 +1,5 @@
-from api.tokens.MoveToken import MoveToken
-from model.Objects.Object       import Object
+from api.tokens.MoveToken       import MoveToken
+from model.Object               import Object
 from model.Components.Position  import Position
 from api.ReturnCode             import ReturnCode
 
