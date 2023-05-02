@@ -1,4 +1,4 @@
-from model.Object   import Object
+from model.Object           import Object
 from model.Tile             import Tile
 from uuid                   import uuid4
 

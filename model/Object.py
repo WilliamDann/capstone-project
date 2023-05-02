@@ -1,6 +1,6 @@
 from model.Components.Position  import Position
 from model.Components.Storage   import Storage
-from enum import Enum
+from enum                       import Enum
 
 class ObjectType(Enum):
     Ship        = 'Ship',

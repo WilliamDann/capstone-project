@@ -1,6 +1,4 @@
 from model.Object import Object
-from model.Objects.Ship   import Ship
-from model.Objects.Station import Station
 
 class Tile:
     name    : str
