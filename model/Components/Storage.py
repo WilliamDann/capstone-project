@@ -1,9 +1,29 @@
 from enum import Enum
 
 class ResourceType(Enum):
-    Credits ='credits',
-    Iron    ='iron',
-    Copper  ='copper'
+    Credits         = 'Credits',        #money from trade
+    BaseMetals      = 'BaseMetals',     #asteroid, mining
+    ElectroMetals   = 'ElectroMetals'   #asteroid, mining
+    RareMetals      = 'RareMetals',     #asteroid, mining
+    BasicFuel       = 'BasicFuel',      #planet
+    Food            = 'Food',           #planet
+    FarmResources   = 'FarmResources',  #planet
+    Water           = 'Water',          #planet
+    Organics        = 'Organics',       #comet, planet
+    Ice             = 'Ice',            #comet, requires processing to water
+    SolidGases      = 'SolidGases',     #comet (ie methane, ammonia; process to organics)
+    Helium          = 'Helium',         #star
+    Plasma          = 'Plasma',         #star
+    ScrapMetal      = 'ScrapMetal',     #dead planet
+    Radioactives    = 'Radioactives',   #dead planet
+    Components      = 'Components',     #station, manufacturing: components for computers, electronics
+    Electronics     = 'Electronics',    #station, manufacturing
+    ShipUpgrades    = 'ShipUpgrades',   #station
+    Generators      = 'Generators',     #station, manufacturing: power generation for ships, bases
+    BldgMaterials   = 'BldgMaterials'   #station, manufacturing
+
+   
+
 
 class Storage:
     store       : "dict[ResourceType, int]"
