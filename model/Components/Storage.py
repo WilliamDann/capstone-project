@@ -5,7 +5,8 @@ class ResourceType(Enum):
     BaseMetals      = 'BaseMetals',     #asteroid, mining
     ElectroMetals   = 'ElectroMetals'   #asteroid, mining
     RareMetals      = 'RareMetals',     #asteroid, mining
-    BasicFuel       = 'BasicFuel',      #planet
+    BasicFuel       = 'BasicFuel',      #planet, or processed from Plasma
+    ExoticFuel      = 'ExoticFuel',     #processed from Plasma
     Food            = 'Food',           #planet
     FarmResources   = 'FarmResources',  #planet
     Water           = 'Water',          #planet
@@ -15,13 +16,12 @@ class ResourceType(Enum):
     Organics        = 'Organics',       #comet, planet, requires processing -> polymers for electronics
     Ice             = 'Ice',            #comet, requires processing -> water
     SolidGases      = 'SolidGases',     #comet (ie methane, ammonia; process to organics)
-    Helium          = 'Helium',         #star
     Plasma          = 'Plasma',         #star
     ScrapMetal      = 'ScrapMetal',     #dead planet
     Radioactives    = 'Radioactives',   #dead planet
     Components      = 'Components',     #station, manufacturing: components for computers, electronics
     Electronics     = 'Electronics',    #station, manufacturing
-    ShipUpgrades    = 'ShipUpgrades',   #station
+    ShipUpgrades    = 'ShipUpgrades',   #station (trade only)
     Generators      = 'Generators',     #station, manufacturing: power generation for ships, bases
     BldgMaterials   = 'BldgMaterials'   #station, manufacturing
 

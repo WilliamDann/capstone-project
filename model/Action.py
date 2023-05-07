@@ -12,7 +12,7 @@ class ActionType(Enum):
     Research    = 'Research'
 
 
-class Object:
+class Action:
     objId       : str
     objType     : ActionType
 
