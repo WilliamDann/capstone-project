@@ -9,8 +9,11 @@ class ResourceType(Enum):
     Food            = 'Food',           #planet
     FarmResources   = 'FarmResources',  #planet
     Water           = 'Water',          #planet
-    Organics        = 'Organics',       #comet, planet
-    Ice             = 'Ice',            #comet, requires processing to water
+    AlienFossils    = 'AlienFossils',   #planet, dead planet, dead station, for research
+    AlienTech       = 'AlienTech',      #planet, dead planet, dead station, for research
+    AlienResearch   = 'AlienResearch',  #recover research stored on dead station
+    Organics        = 'Organics',       #comet, planet, requires processing -> polymers for electronics
+    Ice             = 'Ice',            #comet, requires processing -> water
     SolidGases      = 'SolidGases',     #comet (ie methane, ammonia; process to organics)
     Helium          = 'Helium',         #star
     Plasma          = 'Plasma',         #star
