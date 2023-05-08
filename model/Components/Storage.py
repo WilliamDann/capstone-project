@@ -1,6 +1,6 @@
 from enum import Enum
 
-class ResourceType(Enum):               #comments are where to find or purchase
+class ResourceType(Enum):               
     Credits         = 'Credits',        #money from trade
     BaseMetals      = 'BaseMetals',     #asteroid, mining
     ElectroMetals   = 'ElectroMetals'   #asteroid, mining
@@ -18,14 +18,14 @@ class ResourceType(Enum):               #comments are where to find or purchase
     Ice             = 'Ice',            #comet, requires processing -> water
     SolidGases      = 'SolidGases',     #comet (ie methane, ammonia; process to organics)
     Plasma          = 'Plasma',         #star
-    ScrapMetal      = 'ScrapMetal',     #dead planet
+    ScrapMetals     = 'ScrapMetals',    #dead planet
     Radioactives    = 'Radioactives',   #dead planet
-    Components      = 'Components',     #station, manufacturing: components for computers, electronics
     Electronics     = 'Electronics',    #station, manufacturing
     ShipUpgrades    = 'ShipUpgrades',   #station (purchase only)
     Generators      = 'Generators',     #station, manufacturing: power generation for ships, bases
-    BldgMaterials   = 'BldgMaterials',  #station, manufacturing
-    Processor       = 'Processor'       #station (purchase only)
+    Prefab          = 'Prefab',         #station, manufacturing  (was BldgMaterials)
+    Processor       = 'Processor',      #station (purchase only, 3 types)
+    Manufactory     = 'Manufactory'     #station (purchase only, 3 types)
 
    
 
@@ -61,3 +61,6 @@ class Storage:
         self.usedSpace   -= n
 
         return True
+    
+    def count(self, type: ResourceType) -> int:
+        return self.store.get(type)
