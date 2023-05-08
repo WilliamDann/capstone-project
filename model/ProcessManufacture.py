@@ -59,7 +59,7 @@ class ProcessManufacture:
             Storage.deposit('Polymer', quantity)  
             return 0    #return code: ok
 
-def manufacture(self, manufactoryType: str, type1: Storage.ResourceType, type2: Storage.ResourceType, quantity: int):
+def manufacture(self, manufactoryType: str, type1: Storage.ResourceType, type2: Storage.ResourceType, quantity: int) -> int:
     #check ResourceType can be used in manufacturing
         if manufactoryType == 'ElecManufactory' and \
             ((type1 != 'Polymer' or type2 != 'Polymer') or \
