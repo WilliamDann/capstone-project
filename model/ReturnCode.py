@@ -6,3 +6,4 @@ class ReturnCode(Enum):
     NotInRange      = -1
     ResourceMissing = -2
     StorageFull     = -3
+    NotRightProcess = -4    #if resource is not correct for processing or manufacturing

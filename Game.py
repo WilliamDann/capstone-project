@@ -17,8 +17,9 @@ class Game:
         for i in range(tiles):
             self.world.addTile(Tile(f'Tile{i}'))
         for tile in self.world.tiles:
-            other = choice(list(self.world.tiles.values()))
-            self.world.addEdge(self.world.tiles[tile], other)
+            for i in range(2):
+                other = choice(list(self.world.tiles.values()))
+                self.world.addEdge(self.world.tiles[tile], other)
 
     def tick(self):
         self.time += 1

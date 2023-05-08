@@ -3,8 +3,6 @@ from flask                      import render_template, request
 from flask.app                  import Flask
 from pymongo.database           import Database
 from model.Components.Position  import Position
-from model.Objects.Station      import Station
-from model.Objects.Ship         import Ship
 from Game                       import Game
 from random                     import randint
 from json                       import dumps
