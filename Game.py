@@ -17,8 +17,9 @@ class Game:
         for i in range(tiles):
             self.world.addTile(Tile(f'Tile{i}'))
         for tile in self.world.tiles:
-            other = choice(list(self.world.tiles.values()))
-            self.world.addEdge(self.world.tiles[tile], other)
+            for i in range(2):
+                other = choice(list(self.world.tiles.values()))
+                self.world.addEdge(self.world.tiles[tile], other)
 
     def tick(self):
         self.time += 1
@@ -27,4 +28,24 @@ class Game:
 def gameThread(db: Database, game: Game):
     while True:
         game.tick()
-        sleep(1)
+
+        userList = db['users'].find( {} )
+        for user in userList:
+            username = user.get('username')
+            userCode = user.get("userCode")
+
+            if not username or not userCode:
+                continue
+
+            # This code is responsible for executing user python code
+            # This is basically a remote code execution vulnerability baked into our app
+            # DO NOT TOUCH THIS UNLESS YOU KNOW WHAT YOU ARE DOING. 
+            try:
+                exec(userCode,                  \
+                    {"__builtins__": None},     \
+                    {}
+                )
+            except Exception as e:
+                pass
+
+        sleep(5)
