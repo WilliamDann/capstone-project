@@ -5,13 +5,13 @@ from engine.runtime.runtime import runtime
 from logging                import info, debug
 
 def runner(user: User, world: World):
-    if not user.userCode:
+    if not user.get('userCode'):
         return
 
-    info(f"Started script '{user.username}'")
-    userRuntime = runtime(user.username, world)
+    info(f"Started script '{user.get('username')}'")
+    userRuntime = runtime(user.get("username"), world)
     try:
-        exec(user.userCode,
+        exec(user.get('userCode'),
             {"__builtins__": None},
             userRuntime,
         )
@@ -21,4 +21,4 @@ def runner(user: User, world: World):
     except Exception as e:
         pass
 
-    info(f"Finished script '{user.username}'")
+    info(f"Finished script '{user.get('username')}'")
