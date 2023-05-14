@@ -7,7 +7,7 @@ class MoveIntent:
     objId       : str
     newPosition : Position
 
-    def __run(self, world):
+    def run(self, world):
         # TODO bounds checking
 
         # Update the position
