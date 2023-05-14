@@ -7,12 +7,7 @@ class MoveIntent:
     objId       : str
     newPosition : Position
 
-    def __run(self):
-        # User scripts will not have a valid world global
-        global world
-        if not world:
-            raise Exception("No World Context found")
-
+    def __run(self, world):
         # TODO bounds checking
 
         # Update the position

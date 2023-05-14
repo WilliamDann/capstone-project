@@ -16,8 +16,8 @@ def runner(user: User, world: World):
             userRuntime,
         )
 
-        for intent in userRuntime.intents:
-            debug(intent)
+        for intent in userRuntime.get('intents'):
+            intent.__run(world)
     except Exception as e:
         pass
 
