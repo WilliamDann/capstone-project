@@ -6,9 +6,9 @@ def move(obj, to: Position, intents: list):
     # TODO custom move speed
     dx = 1
     dy = 1
-    if to['x'] > obj['position'].x:
+    if to['x'] < obj['position'].x:
         dx = -dx
-    if to['y'] > obj['position'].y:
+    if to['y'] < obj['position'].y:
         dy = -dy
 
     pos = Position(obj['position'].x + dx, obj['position'].y + dy, to['tile'])
