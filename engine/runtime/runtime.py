@@ -7,9 +7,9 @@ def getUserContext(username: str, world: World) -> dict:
     tiles = {}
     objs  = []
 
-    for obj in world.objects:
+    for obj in world.objects.values():
         if obj.owner == username:
-            tiles[obj.position.tileName] = world.tiles[obj.position.tileName].__dict__
+            tiles[obj.position.tile] = world.tiles[obj.position.tile].__dict__
             objs.append(obj.__dict__)
 
     return {
