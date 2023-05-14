@@ -7,6 +7,8 @@ from Game                       import Game
 from random                     import randint
 from json                       import dumps
 
+from engine.runtime.runtime     import runtime
+
 from read_session import read_session
 
 def dict_decode(inst):
@@ -20,6 +22,20 @@ def GameRoutes(app: Flask, db: Database, game: Game):
     @app.get('/api/game/')
     def getGame():
         return dumps(game.__dict__, default=dict_decode), 200
+
+    @app.get('/api/userContext')
+    def userContext():
+        user     = read_session(db)
+        if not user:
+            return render_template("Error.html", error="Authentication error"), 400
+
+        username    = user.get('username')
+        userRuntime = runtime(username, game.world)
+        for val in userRuntime.keys():
+            if callable(userRuntime[val]):
+                userRuntime[val] = None
+
+        return dumps(userRuntime, default=dict_decode), 200
 
     @app.post('/api/game/join')
     def joinGame():
