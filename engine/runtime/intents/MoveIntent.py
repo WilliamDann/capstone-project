@@ -1,5 +1,6 @@
 from dataclasses                import dataclass
 from model.Components.Position  import Position
+from model.World                import World
 from logging                    import info
 
 @dataclass
@@ -7,7 +8,7 @@ class MoveIntent:
     objId       : str
     newPosition : Position
 
-    def run(self, world):
+    def run(self, world: World):
         # TODO bounds checking
 
         # Update the position
