@@ -106,7 +106,7 @@ function drawTile(data, tile, c) {
     c.stroke();
 
     c.fillStyle = 'black';
-    c.fillRect(0, 0, 1000, 500, c);
+    c.fillRect(0, 0, XMax, YMax, c);
     let stars = Math.random() * 1000;
     let s = makeStars(stars, 0, XMax, 0, YMax);
     star(s, c);
@@ -153,8 +153,9 @@ function drawMapTile(x, y, radius, name) {
 }
 
 function drawMapGraph(radius, edges) {
+    canvasState = 'map';
     const set = {};
-
+    c.clearRect(0, 0, 9999, 9999);
     // add tile to the set
     let union = (tile) => 
     {
@@ -192,13 +193,14 @@ let canvasState = 'map'; // 'map', 'tile'
 
 const elem = document.querySelector('#gameCanvas');
 const XMax = 1000;
-const YMax = 500;
+const YMax = 1000;
 const XMod = XMax / 64;
 const YMod = YMax / 64;
 const c = getCanvas();
 const OffsetX = elem.offsetLeft;
 const OffsetY = elem.offsetTop;
 let mapTilePos = new Map();
+const canvas = document.querySelector('canvas')
 
 fetch('/api/game').then(response => response.json()).then(json => {
     let data = json;
@@ -208,8 +210,9 @@ fetch('/api/game').then(response => response.json()).then(json => {
 
     window.addEventListener('click', function (event) {
         if (canvasState == 'map') {
-            x = parseInt(event.clientX - OffsetX);
-            y = parseInt(event.clientY - OffsetY);
+            rect = canvas.getBoundingClientRect()
+            x = parseInt(event.clientX - rect.left);
+            y = parseInt(event.clientY - rect.top);
             console.log(x, y);
             for (let e of mapTilePos.keys()) {
                 console.log(mapTilePos.get(e).name);
