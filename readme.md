@@ -1,6 +1,6 @@
 # LWTech Capstone Project
 
-Welcome to the LWTech capstone project! The idea of this project is to create a game world that players can interact with programmatically to improve the programming ability while having fun. 
+Welcome to the LWTech capstone project! The idea of this project is to create a game world that players can interact with programmatically to improve their programming ability while having fun. 
 
 This project is in it's early stages so keep an eye out for future improvements!
 
