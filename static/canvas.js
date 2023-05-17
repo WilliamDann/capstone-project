@@ -112,15 +112,17 @@ function drawTile(data, tile, c) {
     star(s, c);
     console.log('yay');
     console.log(tile);
-    for (var objId of Object.values(data.world.objects)) {
-        if (objId.objType == "Ship" && objId.position.tile == tile) {
-            ship(objId, c);
+    for (var obj of Object.values(data.world.objects)) {
+        const objType = obj.objType._value_[0]; // extract ship type from python enum structure
+
+        if (objType == "Ship" && obj.position.tile == tile) {
+            ship(obj, c);
         }
-        if (objId.objType == "Station" && objId.position.tile == tile) {
-            station(objId, c);
+        if (objType == "Station" && obj.position.tile == tile) {
+            station(obj, c);
         }
-        if (objId.objType == "Asteroid" && objId.position.tile == tile) {
-            asteroid(objId, c);
+        if (objType == "Asteroid" && obj.position.tile == tile) {
+            asteroid(obj, c);
         }
     }
 }
