@@ -12,6 +12,13 @@ RNG.prototype.nextInt = function() {
   this.state = (this.a * this.state + this.c) % this.m;
   return this.state;
 }
+RNG.prototype.nextRange = function(start, end) {
+    // returns in range [start, end): including start, excluding end
+    // can't modulu nextInt because of weak randomness in lower bits
+    var rangeSize = end - start;
+    var randomUnder1 = this.nextInt() / this.m;
+    return start + Math.floor(randomUnder1 * rangeSize);
+  }
 
 function getCanvas() {
     const elem = document.querySelector('#gameCanvas');
@@ -173,11 +180,14 @@ function drawMapGraph(radius, edges) {
     c.clearRect(0, 0, 9999, 9999);
     canvasState = 'map';
 
+    let seed = 1007;
+    let gen = new RNG(seed);
+
     // add tile to the set
     let union = (tile) => 
     {
-        let angle       = Math.random()*Math.PI*2;
-        let tileRadius  = (Math.random() * radius) + (radius / 3);
+        let angle       = (gen.nextRange(0, 100) / 100) * Math.PI * 2;
+        let tileRadius  = (gen.nextRange(0, 100) / 100)*radius + (radius / 3);
         let x           = (Math.cos(angle)*tileRadius) + (radius * 2);
         let y           = (Math.sin(angle)*tileRadius) + (radius * 2);
 
