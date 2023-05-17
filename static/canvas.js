@@ -171,6 +171,7 @@ function drawMapGraph(radius, edges) {
     const set = {};
     const c   = getCanvas();
     c.clearRect(0, 0, 9999, 9999);
+    canvasState = 'map';
 
     // add tile to the set
     let union = (tile) => 
