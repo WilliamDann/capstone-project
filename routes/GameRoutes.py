@@ -3,16 +3,22 @@ from flask                      import render_template, request
 from flask.app                  import Flask
 from pymongo.database           import Database
 from model.Components.Position  import Position
-from model.Objects.Station      import Station
-from model.Objects.Ship         import Ship
 from Game                       import Game
 from random                     import randint
 from json                       import dumps
 
+from engine.runtime.runtime     import runtime
+from model.Object               import ObjectType, Object
+
 from read_session import read_session
 
 def dict_decode(inst):
-    return inst.__dict__
+    try:
+        if type(inst) == dict:
+            return inst
+        return inst.__dict__
+    except:
+        return None
 
 def GameRoutes(app: Flask, db: Database, game: Game):
     @app.get('/play')
@@ -22,6 +28,20 @@ def GameRoutes(app: Flask, db: Database, game: Game):
     @app.get('/api/game/')
     def getGame():
         return dumps(game.__dict__, default=dict_decode), 200
+
+    @app.get('/api/userContext')
+    def userContext():
+        user     = read_session(db)
+        if not user:
+            return render_template("Error.html", error="Authentication error"), 400
+
+        username    = user.get('username')
+        userRuntime = runtime(username, game.world)
+        for val in userRuntime.keys():
+            if callable(userRuntime[val]):
+                userRuntime[val] = None
+
+        return dumps(userRuntime, default=dict_decode), 200
 
     @app.post('/api/game/join')
     def joinGame():
@@ -34,7 +54,7 @@ def GameRoutes(app: Flask, db: Database, game: Game):
             return render_template('Error.html', error="You must select a tile to join the game"), 400
 
         # Ensure user has no stations in the world
-        userStations = game.world.findObjects(lambda x: type(x) == Station and x.owner == user["username"])
+        userStations = game.world.findObjects(lambda x: x.objType == ObjectType.Station and x.owner == user["username"])
         if len(userStations) != 0:
             return render_template("Error.html", error="You cannot join the world with active stations"), 400
 
@@ -44,13 +64,13 @@ def GameRoutes(app: Flask, db: Database, game: Game):
             return render_template("Error.html", error=f"Tile name {tileName} was not found"), 404
 
         # Make sure tile does not already have a station
-        stationsInTile = game.world.findObjects(lambda x: x.position.tile == tile.name and type(x) == Station)
+        stationsInTile = game.world.findObjects(lambda x: x.position.tile == tile.name and x.objType != ObjectType.Station)
         if len(stationsInTile) != 0:
             return render_template("Error.html", error=f"Tile {tileName} must not contain another station"), 400
 
         # create station owned by player
         # TODO station create logic should be elsewhere
-        station                     = Station()
+        station                     = Object(ObjectType.Station)
         station.owner               = user["username"]
         station.position            = Position(randint(0, tile.size), randint(0, tile.size), tile.name)
         station.storage.totalSpace  = 1000
@@ -59,7 +79,7 @@ def GameRoutes(app: Flask, db: Database, game: Game):
 
         # create ship owned by player
         # TODO ship create logic should be handled elsewhere
-        ship                    = Ship()
+        ship                    = Object(ObjectType.Ship)
         ship.owner              = user["username"]
         ship.position           = Position(station.position.x + 2, station.position.y + 2, tile.name)
         ship.storage.totalSpace = 100

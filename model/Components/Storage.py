@@ -1,9 +1,34 @@
 from enum import Enum
 
-class ResourceType(Enum):
-    Credits ='credits',
-    Iron    ='iron',
-    Copper  ='copper'
+class ResourceType(Enum):               
+    Credits         = 'Credits',        #money from trade
+    BaseMetals      = 'BaseMetals',     #asteroid, mining
+    ElectroMetals   = 'ElectroMetals'   #asteroid, mining
+    RareMetals      = 'RareMetals',     #asteroid, mining
+    BasicFuel       = 'BasicFuel',      #planet, or processed from Plasma
+    ExoticFuel      = 'ExoticFuel',     #processed from Plasma
+    Food            = 'Food',           #planet
+    FarmResources   = 'FarmResources',  #planet
+    Water           = 'Water',          #planet
+    AlienFossils    = 'AlienFossils',   #planet, dead planet, dead station, for research
+    AlienTech       = 'AlienTech',      #planet, dead planet, dead station, for research
+    AlienResearch   = 'AlienResearch',  #recover research stored on dead station
+    Organics        = 'Organics',       #comet, planet, requires processing -> polymers for electronics
+    Polymer         = 'Polymer',        #station purchase or processing
+    Ice             = 'Ice',            #comet, requires processing -> water
+    SolidGases      = 'SolidGases',     #comet (ie methane, ammonia; process to organics)
+    Plasma          = 'Plasma',         #star
+    ScrapMetals     = 'ScrapMetals',    #dead planet
+    Radioactives    = 'Radioactives',   #dead planet
+    Electronics     = 'Electronics',    #station, manufacturing
+    ShipUpgrades    = 'ShipUpgrades',   #station (purchase only)
+    Generators      = 'Generators',     #station, manufacturing: power generation for ships, bases
+    Prefab          = 'Prefab',         #station, manufacturing  (was BldgMaterials)
+    Processor       = 'Processor',      #station (purchase only, 3 types)
+    Manufactory     = 'Manufactory'     #station (purchase only, 3 types)
+
+   
+
 
 class Storage:
     store       : "dict[ResourceType, int]"
@@ -26,7 +51,7 @@ class Storage:
         self.usedSpace += n
         return True
 
-    def deopsit(self, type: ResourceType, n: int) -> bool:
+    def deposit(self, type: ResourceType, n: int) -> bool:
         if self.store.get(type) is None:
             return False
         if self.store.get(type)-n < 0:
@@ -36,3 +61,6 @@ class Storage:
         self.usedSpace   -= n
 
         return True
+    
+    def count(self, type: ResourceType) -> int:
+        return self.store.get(type)

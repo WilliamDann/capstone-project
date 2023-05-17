@@ -18,6 +18,9 @@ class Position:
         self.x -= other.x
         self.y -= other.y
 
+    def __str__(self) -> str:
+        return f'({self.x},{self.y},{self.tile})'
+
     def dist(self, other):
         if other.tile != self.tile:
             return None # TODO this could be done better
