@@ -248,8 +248,10 @@ setInterval(() => {
 
         window.addEventListener('click', function (event) {
             if (canvasState == 'map') {
-                x = parseInt(event.clientX - OffsetX);
-                y = parseInt(event.clientY - OffsetY);
+                rect = canvas.getBoundingClientRect()
+                x = parseInt(event.clientX - rect.left);
+                y = parseInt(event.clientY - rect.top);
+                console.log(x, y);
                 console.log(x, y);
                 for (let e of mapTilePos.keys()) {
                     console.log(mapTilePos.get(e).name);
