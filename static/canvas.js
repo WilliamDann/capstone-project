@@ -1,3 +1,25 @@
+// seeded random allows things to be random but the same for every tile
+// https://stackoverflow.com/questions/424292/seedable-javascript-random-number-generator
+function RNG(seed) {
+    // LCG using GCC's constants
+    this.m = 0x80000000; // 2**31;
+    this.a = 1103515245;
+    this.c = 12345;
+
+    this.state = seed ? seed : Math.floor(Math.random() * (this.m - 1));
+}
+RNG.prototype.nextInt = function() {
+  this.state = (this.a * this.state + this.c) % this.m;
+  return this.state;
+}
+RNG.prototype.nextRange = function(start, end) {
+    // returns in range [start, end): including start, excluding end
+    // can't modulu nextInt because of weak randomness in lower bits
+    var rangeSize = end - start;
+    var randomUnder1 = this.nextInt() / this.m;
+    return start + Math.floor(randomUnder1 * rangeSize);
+  }
+
 function getCanvas() {
     const elem = document.querySelector('#gameCanvas');
     return elem.getContext('2d');
@@ -155,12 +177,21 @@ function drawMapTile(x, y, radius, name) {
 function drawMapGraph(radius, edges) {
     canvasState = 'map';
     const set = {};
+
+    const c   = getCanvas();
     c.clearRect(0, 0, 9999, 9999);
+    canvasState = 'map';
+
+    let seed = 1007;
+    let gen = new RNG(seed);
+  
+    c.clearRect(0, 0, 9999, 9999);
+
     // add tile to the set
     let union = (tile) => 
     {
-        let angle       = Math.random()*Math.PI*2;
-        let tileRadius  = (Math.random() * radius) + (radius / 3);
+        let angle       = (gen.nextRange(0, 100) / 100) * Math.PI * 2;
+        let tileRadius  = (gen.nextRange(0, 100) / 100)*radius + (radius / 3);
         let x           = (Math.cos(angle)*tileRadius) + (radius * 2);
         let y           = (Math.sin(angle)*tileRadius) + (radius * 2);
 
@@ -190,6 +221,7 @@ function drawMapGraph(radius, edges) {
 }
 
 let canvasState = 'map'; // 'map', 'tile'
+let currentTile    = null;
 
 const elem = document.querySelector('#gameCanvas');
 const XMax = 1000;
@@ -202,32 +234,41 @@ const OffsetY = elem.offsetTop;
 let mapTilePos = new Map();
 const canvas = document.querySelector('canvas')
 
-fetch('/api/game').then(response => response.json()).then(json => {
-    let data = json;
+// Update game data every second
+// TODO use Websockets to allow realtime communication
+setInterval(() => {
+    fetch('/api/game').then(response => response.json()).then(json => {
+        console.log('refresh');
+        let data = json;
 
-    canvasState = 'map';
-    drawMapGraph(200, data.world.edges)
+        if (canvasState == 'map')
+            drawMapGraph(200, data.world.edges)
+        else
+            drawTile(data, currentTile, c);
 
-    window.addEventListener('click', function (event) {
-        if (canvasState == 'map') {
-            rect = canvas.getBoundingClientRect()
-            x = parseInt(event.clientX - rect.left);
-            y = parseInt(event.clientY - rect.top);
-            console.log(x, y);
-            for (let e of mapTilePos.keys()) {
-                console.log(mapTilePos.get(e).name);
-                xMin = mapTilePos.get(e).x - mapTilePos.get(e).r;
-                xMax = mapTilePos.get(e).x + mapTilePos.get(e).r;
-                yMin = mapTilePos.get(e).y - mapTilePos.get(e).r;
-                yMax = mapTilePos.get(e).y + mapTilePos.get(e).r;
-                if ((x < xMax && x > xMin) && (y < yMax && y > yMin))
-                {
-                    console.log(`drawing tile ${mapTilePos.get(e).name}`);
-                    drawTile(data, mapTilePos.get(e).name, c);
+        window.addEventListener('click', function (event) {
+            if (canvasState == 'map') {
+                x = parseInt(event.clientX - OffsetX);
+                y = parseInt(event.clientY - OffsetY);
+                console.log(x, y);
+                for (let e of mapTilePos.keys()) {
+                    console.log(mapTilePos.get(e).name);
+                    xMin = mapTilePos.get(e).x - mapTilePos.get(e).r;
+                    xMax = mapTilePos.get(e).x + mapTilePos.get(e).r;
+                    yMin = mapTilePos.get(e).y - mapTilePos.get(e).r;
+                    yMax = mapTilePos.get(e).y + mapTilePos.get(e).r;
+                    if ((x < xMax && x > xMin) && (y < yMax && y > yMin))
+                    {
+                        console.log(`drawing tile ${mapTilePos.get(e).name}`);
+                        currentTile = mapTilePos.get(e).name;
+                        canvasState = 'tile';
+                        drawTile(data, mapTilePos.get(e).name, c);
+                    }
                 }
             }
-        }
+        })
     })
-})
+}, 1000)
+
 
 //TODO add map drawing function and onclick to select tiles.
