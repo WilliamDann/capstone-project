@@ -221,7 +221,7 @@ let currentTile    = null;
 
 const elem = document.querySelector('#gameCanvas');
 const XMax = 1000;
-const YMax = 500;
+const YMax = 1000;
 const XMod = XMax / 64;
 const YMod = YMax / 64;
 const c = getCanvas();
