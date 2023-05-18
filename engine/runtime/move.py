@@ -11,7 +11,7 @@ def move(obj, to: Position, intents: list):
     if to['y'] < obj['position'].y:
         dy = -dy
 
-    pos = Position(obj['position'].x + dx, obj['position'].y + dy, to['tile'])
+    pos = Position(obj['position'].x + dx, obj['position'].y + dy, obj['position'].tile)
     intents.append(MoveIntent(
         objId           = obj['objId'],
         newPosition     = pos
