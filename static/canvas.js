@@ -128,7 +128,7 @@ function drawTile(data, tile, c) {
     c.stroke();
 
     c.fillStyle = 'black';
-    c.fillRect(0, 0, 1000, 500, c);
+    c.fillRect(0, 0, XMax, YMax, c);
     let stars = Math.random() * 1000;
     let s = makeStars(stars, 0, XMax, 0, YMax);
     star(s, c);
@@ -175,13 +175,17 @@ function drawMapTile(x, y, radius, name) {
 }
 
 function drawMapGraph(radius, edges) {
+    canvasState = 'map';
     const set = {};
+
     const c   = getCanvas();
     c.clearRect(0, 0, 9999, 9999);
     canvasState = 'map';
 
     let seed = 1007;
     let gen = new RNG(seed);
+  
+    c.clearRect(0, 0, 9999, 9999);
 
     // add tile to the set
     let union = (tile) => 
@@ -228,6 +232,7 @@ const c = getCanvas();
 const OffsetX = elem.offsetLeft;
 const OffsetY = elem.offsetTop;
 let mapTilePos = new Map();
+const canvas = document.querySelector('canvas')
 
 // Update game data every second
 // TODO use Websockets to allow realtime communication
