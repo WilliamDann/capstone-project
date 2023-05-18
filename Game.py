@@ -24,4 +24,4 @@ class Game:
 def gameThread(db: Database, game: Game):
     while True:
         engine.tick(db, game)
-        sleep(0.8)
+        sleep(0.5)

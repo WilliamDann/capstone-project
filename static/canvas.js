@@ -25,12 +25,25 @@ function getCanvas() {
     return elem.getContext('2d');
 }
 
+function makeSeed(str) {
+    let num = 0
+    for (let i = 0; i < str.length; i++)
+        num += str.charCodeAt(i);
+    return num
+}
+
 function makeStars(count, xMin, xMax, yMin, yMax) {
-    const out = [];
-    for (let i = 0; i < count; i++) {
+    const out     = [];
+    let   strSeed = 'map'
+    if (currentTile)
+        strSeed = currentTile;
+
+    const seed = makeSeed(strSeed);
+    const rng  = new RNG(seed);
+    for (let i = 0; i < rng.nextRange(0, count); i++) {
         const s = {
-            x: Math.random() * (xMax - xMin) + xMin,
-            y: Math.random() * (yMax - yMin) + yMin
+            x: (rng.nextRange(0, 100) / 100) * (xMax - xMin) + xMin,
+            y: (rng.nextRange(0, 100) / 100) * (yMax - yMin) + yMin
         };
         out.push(s);
     }
@@ -129,8 +142,7 @@ function drawTile(data, tile, c) {
 
     c.fillStyle = 'black';
     c.fillRect(0, 0, XMax, YMax, c);
-    let stars = Math.random() * 1000;
-    let s = makeStars(stars, 0, XMax, 0, YMax);
+    let s = makeStars(1000, 0, XMax, 0, YMax);
     star(s, c);
     console.log('yay');
     console.log(tile);
@@ -268,7 +280,7 @@ setInterval(() => {
             }
         })
     })
-}, 1000)
+}, 500)
 
 
 //TODO add map drawing function and onclick to select tiles.
