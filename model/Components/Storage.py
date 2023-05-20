@@ -1,4 +1,6 @@
 from enum import Enum
+from typing import Union
+from ProcMan import ProcManType
 
 class ResourceType(Enum):               
     Credits         = 'Credits',        #money from trade
@@ -24,9 +26,9 @@ class ResourceType(Enum):
     ShipUpgrades    = 'ShipUpgrades',   #station (purchase only)
     Generators      = 'Generators',     #station, manufacturing: power generation for ships, bases
     Prefab          = 'Prefab',         #station, manufacturing  (was BldgMaterials)
-    Processor       = 'Processor',      #station (purchase only, 3 types)
-    Manufactory     = 'Manufactory'     #station (purchase only, 3 types)
 
+    #list also includes the processors and manufactories from ProcMan.py
+    #these processors/manufactories are for sale only from stations
    
 
 

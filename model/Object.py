@@ -4,6 +4,7 @@ from enum                       import Enum
 
 class ObjectType(Enum):
     Ship        = 'Ship',
+    Base        = 'Base',
     Asteroid    = 'Asteroid',
     Comet       = 'Comet',
     Planet      = 'Planet',
