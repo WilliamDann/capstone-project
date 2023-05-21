@@ -255,8 +255,8 @@ function getClickedTile(x, y){
     }
 }
 
-let canvasState = 'map'; // 'map', 'tile'
-let currentTile    = null;
+let canvasState = 'map'; // 'map', 'tile', 'join'
+let currentTile = null;
 
 const elem = document.querySelector('#gameCanvas');
 const XMax = 1000;
@@ -278,6 +278,12 @@ setInterval(() => {
 
         if (canvasState == 'map')
             drawMapGraph(200, data.world.edges)
+        else if (canvasState == 'join'){
+            drawMapGraph(200, data.world.edges)
+            c.fillStyle = "black";
+            c.font = "48px Caveat";
+            c.fillText("Click a tile to join!", 100, 100);
+        }
         else
             drawTile(data, currentTile, c);
 
