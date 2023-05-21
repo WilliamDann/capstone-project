@@ -255,6 +255,14 @@ function getClickedTile(x, y){
     }
 }
 
+function userHasObjects(data)
+{
+    for (let obj of Object.values(data.world.objects))
+        if (obj.owner == data.user.username)
+            return true;
+    return false
+}
+
 let canvasState = 'map'; // 'map', 'tile', 'join'
 let currentTile = null;
 
@@ -275,6 +283,9 @@ setInterval(() => {
     fetch('/api/game').then(response => response.json()).then(json => {
         console.log('refresh');
         let data = json;
+
+        if (canvasState != 'join' && !userHasObjects(data))
+            canvasState = 'join'
 
         if (canvasState == 'map')
             drawMapGraph(200, data.world.edges)

@@ -30,8 +30,8 @@ def GameRoutes(app: Flask, db: Database, game: Game):
         user     = read_session(db)
         if not user:
             return render_template("Error.html", error="Authentication error"), 400
-        game.user               = user
-        game.user.passwordHash  = None
+        game.user = user
+        game.user['pwHash'] = None
 
         return dumps(game.__dict__, default=dict_decode), 200
 
