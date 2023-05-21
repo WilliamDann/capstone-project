@@ -64,7 +64,7 @@ def GameRoutes(app: Flask, db: Database, game: Game):
             return render_template("Error.html", error=f"Tile name {tileName} was not found"), 404
 
         # Make sure tile does not already have a station
-        stationsInTile = game.world.findObjects(lambda x: x.position.tile == tile.name and x.objType != ObjectType.Station)
+        stationsInTile = game.world.findObjects(lambda x: x.position.tile == tile.name and x.objType == ObjectType.Station)
         if len(stationsInTile) != 0:
             return render_template("Error.html", error=f"Tile {tileName} must not contain another station"), 400
 
