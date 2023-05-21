@@ -14,9 +14,10 @@ class Game:
         self.world  = World()
 
     def makeWorld(self, tiles=10):
-        return WorldBuilder()   \
-            .makeTiles(10)      \
-            .connectTiles(2)    \
+        self.world = WorldBuilder()    \
+            .makeTiles(tiles)    \
+            .connectTiles(2)     \
+            .generateAsteroids() \
             .build()
 
 def gameThread(db: Database, game: Game):
