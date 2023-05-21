@@ -1,6 +1,8 @@
 from model.Tile import Tile
 from model.World import World
-from random      import choice
+from model.Object import Object, ObjectType
+from random      import choice, randint
+from logging     import debug
 
 class WorldBuilder:
     world: World
@@ -24,3 +26,18 @@ class WorldBuilder:
     # Create the world object
     def build(self):
         return self.world
+    
+    def createAsteroid(self, tileName: str):
+        obj = Object(ObjectType.Asteroid)
+        obj.position.tile = tileName
+        obj.position.x = randint(0,64)
+        obj.position.y = randint(0,64)
+        #obj.storage
+        self.world.addObject(obj)
+        return self
+    
+    def generateAsteroids(self, num:int = 10):
+        for tile in self.world.tiles:
+            for i in range(num):
+                self.createAsteroid(tile)
+        return self
