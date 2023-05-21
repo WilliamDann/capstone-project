@@ -1,4 +1,4 @@
-from WorldBuilder import WorldBuilder
+from model.WorldBuilder import WorldBuilder
 from model.Tile         import Tile
 from model.World        import World
 from time               import sleep
