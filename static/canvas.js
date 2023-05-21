@@ -232,6 +232,29 @@ function drawMapGraph(radius, edges) {
     }
 }
 
+function getCanvasPos(clickEvent){
+    rect = canvas.getBoundingClientRect()
+    x    = parseInt(clickEvent.clientX - rect.left);
+    y    = parseInt(clickEvent.clientY - rect.top);
+
+    return {x: x, y: y};
+}
+
+function getClickedTile(x, y){
+
+    for (let e of mapTilePos.keys()) {
+        console.log(mapTilePos.get(e).name);
+        xMin = mapTilePos.get(e).x - mapTilePos.get(e).r;
+        xMax = mapTilePos.get(e).x + mapTilePos.get(e).r;
+        yMin = mapTilePos.get(e).y - mapTilePos.get(e).r;
+        yMax = mapTilePos.get(e).y + mapTilePos.get(e).r;
+        if ((x < xMax && x > xMin) && (y < yMax && y > yMin))
+        {
+            return mapTilePos.get(e).name;
+        }
+    }
+}
+
 let canvasState = 'map'; // 'map', 'tile'
 let currentTile    = null;
 
@@ -260,24 +283,14 @@ setInterval(() => {
 
         window.addEventListener('click', function (event) {
             if (canvasState == 'map') {
-                rect = canvas.getBoundingClientRect()
-                x = parseInt(event.clientX - rect.left);
-                y = parseInt(event.clientY - rect.top);
-                console.log(x, y);
-                console.log(x, y);
-                for (let e of mapTilePos.keys()) {
-                    console.log(mapTilePos.get(e).name);
-                    xMin = mapTilePos.get(e).x - mapTilePos.get(e).r;
-                    xMax = mapTilePos.get(e).x + mapTilePos.get(e).r;
-                    yMin = mapTilePos.get(e).y - mapTilePos.get(e).r;
-                    yMax = mapTilePos.get(e).y + mapTilePos.get(e).r;
-                    if ((x < xMax && x > xMin) && (y < yMax && y > yMin))
-                    {
-                        console.log(`drawing tile ${mapTilePos.get(e).name}`);
-                        currentTile = mapTilePos.get(e).name;
-                        canvasState = 'tile';
-                        drawTile(data, mapTilePos.get(e).name, c);
-                    }
+
+                let canvasPos = getCanvasPos(event);
+                currentTile   = getClickedTile(canvasPos.x, canvasPos.y);
+                if (currentTile){
+                    console.log(`drawing tile ${currentTile}`);
+                    currentTile = currentTile;
+                    canvasState = 'tile';
+                    drawTile(data, currentTile, c);
                 }
             }
         })
