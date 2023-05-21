@@ -23,6 +23,9 @@ def dict_decode(inst):
 def GameRoutes(app: Flask, db: Database, game: Game):
     @app.get('/play')
     def playPage():
+        user = read_session(db)
+        if not user:
+            return render_template("User/signin.html")
         return render_template('Play.html', game=dumps(game.__dict__, default=dict_decode))
 
     @app.get('/api/game/')
