@@ -333,6 +333,6 @@ setInterval(() => {
             }
         })
     })
-}, 500)
+}, 2000)
 
 //TODO add map drawing function and onclick to select tiles.
