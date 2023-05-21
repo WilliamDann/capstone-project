@@ -26,15 +26,16 @@ function getCanvas() {
 }
 
 function makeSeed(str) {
-    let num = 0
+    let num = 0;
     for (let i = 0; i < str.length; i++)
         num += str.charCodeAt(i);
-    return num
+    return num;
 }
 
 function makeStars(count, xMin, xMax, yMin, yMax) {
+
     const out = [];
-    let strSeed = 'map'
+    let strSeed = 'map';
     if (currentTile)
         strSeed = currentTile;
 
@@ -90,13 +91,13 @@ function station(objID, c) {
     c.fillStyle = "yellow";
     c.beginPath();
     c.moveTo(objID.position.x * XMod, objID.position.y * YMod);
-    c.lineTo(objID.position.x * XMod + 10, objID.position.y * YMod + 5)
-    c.lineTo(objID.position.x * XMod + 20, objID.position.y * YMod)
-    c.lineTo(objID.position.x * XMod + 15, objID.position.y * YMod + 10)
+    c.lineTo(objID.position.x * XMod + 10, objID.position.y * YMod + 5);
+    c.lineTo(objID.position.x * XMod + 20, objID.position.y * YMod);
+    c.lineTo(objID.position.x * XMod + 15, objID.position.y * YMod + 10);
     c.lineTo(objID.position.x * XMod + 20, objID.position.y * YMod + 20);
     c.lineTo(objID.position.x * XMod + 10, objID.position.y * YMod + 15);
     c.lineTo(objID.position.x * XMod, objID.position.y * YMod + 20);
-    c.lineTo(objID.position.x * XMod + 5, objID.position.y * YMod + 10)
+    c.lineTo(objID.position.x * XMod + 5, objID.position.y * YMod + 10);
     c.closePath();
     c.fill();
     c.stroke();
@@ -126,9 +127,9 @@ function asteroid(objID, c) {
     c.fillStyle = "rgb(214, 208, 193)";
     c.beginPath();
     c.moveTo(objID.position.x * XMod + 4, objID.position.y * YMod + 2);
-    c.lineTo(objID.position.x * XMod + 10, objID.position.y * YMod)
-    c.lineTo(objID.position.x * XMod + 17, objID.position.y * YMod + 4)
-    c.lineTo(objID.position.x * XMod + 20, objID.position.y * YMod + 4)
+    c.lineTo(objID.position.x * XMod + 10, objID.position.y * YMod);
+    c.lineTo(objID.position.x * XMod + 17, objID.position.y * YMod + 4);
+    c.lineTo(objID.position.x * XMod + 20, objID.position.y * YMod + 4);
     c.lineTo(objID.position.x * XMod + 20, objID.position.y * YMod + 9);
     c.lineTo(objID.position.x * XMod + 16, objID.position.y * YMod + 20);
     c.lineTo(objID.position.x * XMod + 10, objID.position.y * YMod + 17);
@@ -144,13 +145,15 @@ function drawTile(data, tile, c) {
     canvasState = 'tile';
     c.clearRect(0, 0, 9999, 9999);
     c.stroke();
-
     c.fillStyle = 'black';
     c.fillRect(0, 0, XMax, YMax, c);
+
     let s = makeStars(1000, 0, XMax, 0, YMax);
     star(s, c);
+
     console.log('yay');
     console.log(tile);
+
     for (var obj of Object.values(data.world.objects)) {
         const objType = obj.objType._value_[0]; // extract ship type from python enum structure
 
@@ -184,14 +187,13 @@ function drawMapTile(x, y, radius, name) {
     c.fill();
 
     let s = makeStars(25, x - radius, x + radius, y - radius, y + radius);
-
     star(s, c);
+
     c.font = "15px Caveat";
     c.fillText(name, x - radius, y + 5);
 }
 
 function drawMapGraph(radius, edges) {
-
     const set = {};
     const c = getCanvas();
 
@@ -210,8 +212,9 @@ function drawMapGraph(radius, edges) {
         let y = (Math.sin(angle) * tileRadius) + (radius * 2);
 
         let drawnTileRadius = 20;
-        drawMapTile(x, y, drawnTileRadius, tile)
-        set[tile] = { name: tile, x: x, y: y, r: drawnTileRadius }
+        drawMapTile(x, y, drawnTileRadius, tile);
+
+        set[tile] = { name: tile, x: x, y: y, r: drawnTileRadius };
         mapTilePos.set(tile, set[tile]); // update click map
     }
 
@@ -226,7 +229,7 @@ function drawMapGraph(radius, edges) {
                 continue;
             }
 
-            union(edge)
+            union(edge);
         }
     }
 }
@@ -243,10 +246,12 @@ function getClickedTile(x, y) {
 
     for (let e of mapTilePos.keys()) {
         console.log(mapTilePos.get(e).name);
+
         xMin = mapTilePos.get(e).x - mapTilePos.get(e).r;
         xMax = mapTilePos.get(e).x + mapTilePos.get(e).r;
         yMin = mapTilePos.get(e).y - mapTilePos.get(e).r;
         yMax = mapTilePos.get(e).y + mapTilePos.get(e).r;
+
         if ((x < xMax && x > xMin) && (y < yMax && y > yMin)) {
             return mapTilePos.get(e).name;
         }
@@ -254,10 +259,12 @@ function getClickedTile(x, y) {
 }
 
 function userHasObjects(data) {
-    for (let obj of Object.values(data.world.objects))
+
+    for (let obj of Object.values(data.world.objects)) {
         if (obj.owner == data.user.username)
             return true;
-    return false
+    }
+    return false;
 }
 
 let canvasState = 'map'; // 'map', 'tile', 'join'
@@ -272,7 +279,7 @@ const c = getCanvas();
 const OffsetX = elem.offsetLeft;
 const OffsetY = elem.offsetTop;
 let mapTilePos = new Map();
-const canvas = document.querySelector('canvas')
+const canvas = document.querySelector('canvas');
 
 // Update game data every second
 // TODO use Websockets to allow realtime communication
@@ -282,10 +289,11 @@ setInterval(() => {
         let data = json;
 
         if (canvasState != 'join' && !userHasObjects(data))
-            canvasState = 'join'
+            canvasState = 'join';
 
         if (canvasState == 'map')
-            drawMapGraph(200, data.world.edges)
+            drawMapGraph(200, data.world.edges);
+
         else if (canvasState == 'join') {
             drawMapGraph(200, data.world.edges)
             c.fillStyle = "black";
@@ -297,9 +305,9 @@ setInterval(() => {
 
         window.addEventListener('click', function (event) {
             if (canvasState == 'map') {
-
                 let canvasPos = getCanvasPos(event);
                 currentTile = getClickedTile(canvasPos.x, canvasPos.y);
+
                 if (currentTile) {
                     console.log(`drawing tile ${currentTile}`);
                     currentTile = currentTile;
@@ -311,10 +319,9 @@ setInterval(() => {
                 let canvasPos = getCanvasPos(event);
                 currentTile = getClickedTile(canvasPos.x, canvasPos.y);
                 if (currentTile) {
-
                     let formData = new FormData();
                     formData.append('tileName', currentTile);
-                    canvasState = 'tile'
+                    canvasState = 'tile';
                     fetch(
                         '/api/game/join',
                         {
