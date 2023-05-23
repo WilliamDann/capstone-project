@@ -85,6 +85,7 @@ function ship(objID, c) {
     c.closePath();
     c.fill();
     c.stroke();
+    drawHealthBar(objID.position.x, objID.position.y, objID.health);
 }
 
 function station(objID, c) {
@@ -101,6 +102,7 @@ function station(objID, c) {
     c.closePath();
     c.fill();
     c.stroke();
+    drawHealthBar(objID.position.x, objID.position.y, objID.health);
 }
 
 function asteroid(objID, c) {
@@ -138,7 +140,6 @@ function asteroid(objID, c) {
     c.closePath();
     c.fill();
     c.stroke();
-    drawHealthBar(objID.position.x, objID.position.y, objID.health);
 }
 
 function drawTile(data, tile, c) {
@@ -345,6 +346,6 @@ setInterval(() => {
             }
         })
     })
-}, 1000)
+}, 2000)
 
 //TODO add map drawing function and onclick to select tiles.
