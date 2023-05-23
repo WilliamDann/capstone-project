@@ -21,6 +21,34 @@ def dict_decode(inst):
         return None
 
 def GameRoutes(app: Flask, db: Database, game: Game):
+    @app.post('/api/game/debugSpawn')
+    def debugSpawn():
+        objType = ObjectType[request.form.get('objType')]
+        health  = request.form.get('health')
+        x       = request.form.get('x')
+        y       = request.form.get('y')
+        tile    = request.form.get('tile')
+        owner   = request.form.get('owner')
+
+        if not objType:
+            return "objType must be defined", 400
+        if not tile:
+            return "tile must be defined", 400
+        obj = Object(objType)
+        obj.position.tile = tile
+
+        if health:
+            obj.health      = health
+        if x:
+            obj.position.x  = x
+        if y:
+            obj.position.y  = y
+        if owner:
+            obj.owner       = owner
+
+        game.world.addObject(obj)
+        return "Object spawned", 200
+
     @app.get('/play')
     def playPage():
         user = read_session(db)

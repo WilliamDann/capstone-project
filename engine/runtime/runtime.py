@@ -1,3 +1,4 @@
+from engine.runtime.attack import attack
 from engine.runtime.move    import move
 from engine.runtime.find    import find
 from model.Components.Position import Position
@@ -34,7 +35,8 @@ def runtime(username: str, world: World) -> dict:
         'log'           : info,         # Logging function for debugging TODO remove
 
         # Object
-        'move' : move,                  # Generates move intents
+        'move'   : move,                # Generates move intents
+        'attack' : attack,              # Generates attack intents
 
         # Globals
         'tiles'     : ctx['tiles'],     # Tiles the user is on

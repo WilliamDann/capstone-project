@@ -85,6 +85,7 @@ function ship(objID, c) {
     c.closePath();
     c.fill();
     c.stroke();
+    drawHealthBar(objID.position.x, objID.position.y, objID.health);
 }
 
 function station(objID, c) {
@@ -101,6 +102,7 @@ function station(objID, c) {
     c.closePath();
     c.fill();
     c.stroke();
+    drawHealthBar(objID.position.x, objID.position.y, objID.health);
 }
 
 function asteroid(objID, c) {
@@ -167,6 +169,18 @@ function drawTile(data, tile, c) {
             asteroid(obj, c);
         }
     }
+}
+
+function drawHealthBar(x, y, health=100)
+{
+    c.beginPath();
+
+    last = c.fillStyle;
+    c.fillStyle = 'red';
+    c.rect((x*XMod)-(health / 4)+9, (y*YMod)+25, health / 2, 2)
+    c.fill();
+
+    c.fillStyle = last;
 }
 
 function drawMapTileConnection(x, y, toX, toY) {
@@ -285,7 +299,6 @@ const canvas = document.querySelector('canvas');
 // TODO use Websockets to allow realtime communication
 setInterval(() => {
     fetch('/api/game').then(response => response.json()).then(json => {
-        console.log('refresh');
         let data = json;
 
         if (canvasState != 'join' && !userHasObjects(data))
