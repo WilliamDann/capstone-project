@@ -298,7 +298,6 @@ const canvas = document.querySelector('canvas');
 // TODO use Websockets to allow realtime communication
 setInterval(() => {
     fetch('/api/game').then(response => response.json()).then(json => {
-        console.log('refresh');
         let data = json;
 
         if (canvasState != 'join' && !userHasObjects(data))
@@ -346,6 +345,6 @@ setInterval(() => {
             }
         })
     })
-}, 2000)
+}, 1000)
 
 //TODO add map drawing function and onclick to select tiles.
