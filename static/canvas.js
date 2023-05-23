@@ -138,6 +138,7 @@ function asteroid(objID, c) {
     c.closePath();
     c.fill();
     c.stroke();
+    drawHealthBar(objID.position.x, objID.position.y, objID.health);
 }
 
 function drawTile(data, tile, c) {
@@ -167,6 +168,18 @@ function drawTile(data, tile, c) {
             asteroid(obj, c);
         }
     }
+}
+
+function drawHealthBar(x, y, health=100)
+{
+    c.beginPath();
+
+    last = c.fillStyle;
+    c.fillStyle = 'red';
+    c.rect((x*XMod)-(health / 4)+9, (y*YMod)+25, health / 2, 2)
+    c.fill();
+
+    c.fillStyle = last;
 }
 
 function drawMapTileConnection(x, y, toX, toY) {

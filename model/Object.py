@@ -17,6 +17,7 @@ class Object:
     objId       : str
     objType     : ObjectType
 
+    health      : int
     position    : Position
     storage     : Storage
 
@@ -26,5 +27,6 @@ class Object:
         self.objType  = objType
         self.position = Position(0, 0, None)
         self.storage  = Storage(0)
+        self.health   = 100
         self.owner    = None
         self.objId    = None
