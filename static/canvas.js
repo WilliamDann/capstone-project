@@ -52,11 +52,21 @@ function makeStars(count, xMin, xMax, yMin, yMax) {
 }
 
 function star(s, c) {
+    let count = 0
     for (let i = 0; i < s.length; i++) {
         c.beginPath();
         c.fillStyle = 'white';
         const next = s[i];
-        c.fillRect(next.x, next.y, 1, 1);
+        if (count%15 == 0) {
+            c.fillRect(next.x, next.y, 2, 2);
+            count = 0;
+        }        
+        if (count%20 == 0) {
+            c.fillRect(next.x, next.y, 3, 3);
+            count = 0;
+        }
+        else c.fillRect(next.x, next.y, 1, 1);
+        count++
     }
 }
 
@@ -208,6 +218,7 @@ function drawMapTile(x, y, radius, name) {
 }
 
 function drawMapGraph(radius, edges) {
+    canvasState = 'map';
     const set = {};
     const c = getCanvas();
 
@@ -287,8 +298,8 @@ let currentTile = null;
 const elem = document.querySelector('#gameCanvas');
 const XMax = 1000;
 const YMax = 1000;
-const XMod = XMax / 64;
-const YMod = YMax / 64;
+const XMod = XMax / 66;
+const YMod = YMax / 66;
 const c = getCanvas();
 const OffsetX = elem.offsetLeft;
 const OffsetY = elem.offsetTop;

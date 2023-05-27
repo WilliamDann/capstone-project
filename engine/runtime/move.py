@@ -10,7 +10,10 @@ def move(obj, to: Position, intents: list):
         dx = -dx
     if to['y'] < obj['position'].y:
         dy = -dy
-
+    if to['x'] == obj['position'].x:
+        dx = 0
+    if to['y'] == obj['position'].y:
+        dy = 0
     pos = Position(obj['position'].x + dx, obj['position'].y + dy, obj['position'].tile)
     intents.append(MoveIntent(
         objId           = obj['objId'],
