@@ -1,19 +1,56 @@
+// seeded random allows things to be random but the same for every tile
+// https://stackoverflow.com/questions/424292/seedable-javascript-random-number-generator
+function RNG(seed) {
+    // LCG using GCC's constants
+    this.m = 0x80000000; // 2**31;
+    this.a = 1103515245;
+    this.c = 12345;
+
+    this.state = seed ? seed : Math.floor(Math.random() * (this.m - 1));
+}
+RNG.prototype.nextInt = function () {
+    this.state = (this.a * this.state + this.c) % this.m;
+    return this.state;
+}
+RNG.prototype.nextRange = function (start, end) {
+    // returns in range [start, end): including start, excluding end
+    // can't modulu nextInt because of weak randomness in lower bits
+    var rangeSize = end - start;
+    var randomUnder1 = this.nextInt() / this.m;
+    return start + Math.floor(randomUnder1 * rangeSize);
+}
+
 function getCanvas() {
     const elem = document.querySelector('#gameCanvas');
     return elem.getContext('2d');
 }
 
+function makeSeed(str) {
+    let num = 0;
+    for (let i = 0; i < str.length; i++)
+        num += str.charCodeAt(i);
+    return num;
+}
+
 function makeStars(count, xMin, xMax, yMin, yMax) {
+
     const out = [];
-    for (let i = 0; i < count; i++) {
+    let strSeed = 'map';
+    if (currentTile)
+        strSeed = currentTile;
+
+    const seed = makeSeed(strSeed);
+    const rng = new RNG(seed);
+    for (let i = 0; i < rng.nextRange(0, count); i++) {
         const s = {
-            x: Math.random() * (xMax - xMin) + xMin,
-            y: Math.random() * (yMax - yMin) + yMin
+            x: (rng.nextRange(0, 100) / 100) * (xMax - xMin) + xMin,
+            y: (rng.nextRange(0, 100) / 100) * (yMax - yMin) + yMin
         };
         out.push(s);
     }
     return out;
 }
+
 function star(s, c) {
     for (let i = 0; i < s.length; i++) {
         c.beginPath();
@@ -22,6 +59,7 @@ function star(s, c) {
         c.fillRect(next.x, next.y, 1, 1);
     }
 }
+
 function ship(objID, c) {
     /**
      *  var dir;
@@ -47,22 +85,26 @@ function ship(objID, c) {
     c.closePath();
     c.fill();
     c.stroke();
+    drawHealthBar(objID.position.x, objID.position.y, objID.health);
 }
+
 function station(objID, c) {
     c.fillStyle = "yellow";
     c.beginPath();
     c.moveTo(objID.position.x * XMod, objID.position.y * YMod);
-    c.lineTo(objID.position.x * XMod + 10, objID.position.y * YMod + 5)
-    c.lineTo(objID.position.x * XMod + 20, objID.position.y * YMod)
-    c.lineTo(objID.position.x * XMod + 15, objID.position.y * YMod + 10)
+    c.lineTo(objID.position.x * XMod + 10, objID.position.y * YMod + 5);
+    c.lineTo(objID.position.x * XMod + 20, objID.position.y * YMod);
+    c.lineTo(objID.position.x * XMod + 15, objID.position.y * YMod + 10);
     c.lineTo(objID.position.x * XMod + 20, objID.position.y * YMod + 20);
     c.lineTo(objID.position.x * XMod + 10, objID.position.y * YMod + 15);
     c.lineTo(objID.position.x * XMod, objID.position.y * YMod + 20);
-    c.lineTo(objID.position.x * XMod + 5, objID.position.y * YMod + 10)
+    c.lineTo(objID.position.x * XMod + 5, objID.position.y * YMod + 10);
     c.closePath();
     c.fill();
     c.stroke();
+    drawHealthBar(objID.position.x, objID.position.y, objID.health);
 }
+
 function asteroid(objID, c) {
     /**
      *  var dir;
@@ -87,9 +129,9 @@ function asteroid(objID, c) {
     c.fillStyle = "rgb(214, 208, 193)";
     c.beginPath();
     c.moveTo(objID.position.x * XMod + 4, objID.position.y * YMod + 2);
-    c.lineTo(objID.position.x * XMod + 10, objID.position.y * YMod)
-    c.lineTo(objID.position.x * XMod + 17, objID.position.y * YMod + 4)
-    c.lineTo(objID.position.x * XMod + 20, objID.position.y * YMod + 4)
+    c.lineTo(objID.position.x * XMod + 10, objID.position.y * YMod);
+    c.lineTo(objID.position.x * XMod + 17, objID.position.y * YMod + 4);
+    c.lineTo(objID.position.x * XMod + 20, objID.position.y * YMod + 4);
     c.lineTo(objID.position.x * XMod + 20, objID.position.y * YMod + 9);
     c.lineTo(objID.position.x * XMod + 16, objID.position.y * YMod + 20);
     c.lineTo(objID.position.x * XMod + 10, objID.position.y * YMod + 17);
@@ -99,19 +141,21 @@ function asteroid(objID, c) {
     c.fill();
     c.stroke();
 }
+
 function drawTile(data, tile, c) {
     //obj = Object.values(data.world.objects).filter(x => x.position.tileName == tileName);
     canvasState = 'tile';
     c.clearRect(0, 0, 9999, 9999);
     c.stroke();
-
     c.fillStyle = 'black';
     c.fillRect(0, 0, XMax, YMax, c);
-    let stars = Math.random() * 1000;
-    let s = makeStars(stars, 0, XMax, 0, YMax);
+
+    let s = makeStars(1000, 0, XMax, 0, YMax);
     star(s, c);
+
     console.log('yay');
     console.log(tile);
+
     for (var obj of Object.values(data.world.objects)) {
         const objType = obj.objType._value_[0]; // extract ship type from python enum structure
 
@@ -127,9 +171,20 @@ function drawTile(data, tile, c) {
     }
 }
 
-function drawMapTileConnection(x, y, toX, toY)
+function drawHealthBar(x, y, health=100)
 {
-    let c =  getCanvas();
+    c.beginPath();
+
+    last = c.fillStyle;
+    c.fillStyle = 'red';
+    c.rect((x*XMod)-(health / 4)+9, (y*YMod)+25, health / 2, 2)
+    c.fill();
+
+    c.fillStyle = last;
+}
+
+function drawMapTileConnection(x, y, toX, toY) {
+    let c = getCanvas();
 
     c.beginPath();
     c.moveTo(x, y);
@@ -146,50 +201,88 @@ function drawMapTile(x, y, radius, name) {
     c.fill();
 
     let s = makeStars(25, x - radius, x + radius, y - radius, y + radius);
-
     star(s, c);
+
     c.font = "15px Caveat";
     c.fillText(name, x - radius, y + 5);
 }
 
 function drawMapGraph(radius, edges) {
-    canvasState = 'map';
     const set = {};
+    const c = getCanvas();
+
     c.clearRect(0, 0, 9999, 9999);
+
+    let seed = 1007;
+    let gen = new RNG(seed);
+
+    c.clearRect(0, 0, 9999, 9999);
+
     // add tile to the set
-    let union = (tile) => 
-    {
-        let angle       = Math.random()*Math.PI*2;
-        let tileRadius  = (Math.random() * radius) + (radius / 3);
-        let x           = (Math.cos(angle)*tileRadius) + (radius * 2);
-        let y           = (Math.sin(angle)*tileRadius) + (radius * 2);
+    let union = (tile) => {
+        let angle = (gen.nextRange(0, 100) / 100) * Math.PI * 2;
+        let tileRadius = (gen.nextRange(0, 100) / 100) * radius + (radius / 3);
+        let x = (Math.cos(angle) * tileRadius) + (radius * 2);
+        let y = (Math.sin(angle) * tileRadius) + (radius * 2);
 
         let drawnTileRadius = 20;
-        drawMapTile(x, y, drawnTileRadius, tile)
-        set[tile] = {name: tile, x: x, y: y, r: drawnTileRadius}
+        drawMapTile(x, y, drawnTileRadius, tile);
+
+        set[tile] = { name: tile, x: x, y: y, r: drawnTileRadius };
         mapTilePos.set(tile, set[tile]); // update click map
     }
 
-    for (let tile in edges)
-    {
+    for (let tile in edges) {
         if (!set[tile])
             union(tile);
 
-        for (let edge of edges[tile])
-        {
-            if (set[edge])
-            {
+        for (let edge of edges[tile]) {
+            if (set[edge]) {
                 drawMapTileConnection(set[tile].x, set[tile].y, set[edge].x, set[edge].y);
                 // TODO pull tiles closer togther
                 continue;
             }
 
-            union(edge)
+            union(edge);
         }
     }
 }
 
-let canvasState = 'map'; // 'map', 'tile'
+function getCanvasPos(clickEvent) {
+    rect = canvas.getBoundingClientRect()
+    x = parseInt(clickEvent.clientX - rect.left);
+    y = parseInt(clickEvent.clientY - rect.top);
+
+    return { x: x, y: y };
+}
+
+function getClickedTile(x, y) {
+
+    for (let e of mapTilePos.keys()) {
+        console.log(mapTilePos.get(e).name);
+
+        xMin = mapTilePos.get(e).x - mapTilePos.get(e).r;
+        xMax = mapTilePos.get(e).x + mapTilePos.get(e).r;
+        yMin = mapTilePos.get(e).y - mapTilePos.get(e).r;
+        yMax = mapTilePos.get(e).y + mapTilePos.get(e).r;
+
+        if ((x < xMax && x > xMin) && (y < yMax && y > yMin)) {
+            return mapTilePos.get(e).name;
+        }
+    }
+}
+
+function userHasObjects(data) {
+
+    for (let obj of Object.values(data.world.objects)) {
+        if (obj.owner == data.user.username)
+            return true;
+    }
+    return false;
+}
+
+let canvasState = 'map'; // 'map', 'tile', 'join'
+let currentTile = null;
 
 const elem = document.querySelector('#gameCanvas');
 const XMax = 1000;
@@ -200,34 +293,59 @@ const c = getCanvas();
 const OffsetX = elem.offsetLeft;
 const OffsetY = elem.offsetTop;
 let mapTilePos = new Map();
-const canvas = document.querySelector('canvas')
+const canvas = document.querySelector('canvas');
 
-fetch('/api/game').then(response => response.json()).then(json => {
-    let data = json;
+// Update game data every second
+// TODO use Websockets to allow realtime communication
+setInterval(() => {
+    fetch('/api/game').then(response => response.json()).then(json => {
+        let data = json;
 
-    canvasState = 'map';
-    drawMapGraph(200, data.world.edges)
+        if (canvasState != 'join' && !userHasObjects(data))
+            canvasState = 'join';
 
-    window.addEventListener('click', function (event) {
-        if (canvasState == 'map') {
-            rect = canvas.getBoundingClientRect()
-            x = parseInt(event.clientX - rect.left);
-            y = parseInt(event.clientY - rect.top);
-            console.log(x, y);
-            for (let e of mapTilePos.keys()) {
-                console.log(mapTilePos.get(e).name);
-                xMin = mapTilePos.get(e).x - mapTilePos.get(e).r;
-                xMax = mapTilePos.get(e).x + mapTilePos.get(e).r;
-                yMin = mapTilePos.get(e).y - mapTilePos.get(e).r;
-                yMax = mapTilePos.get(e).y + mapTilePos.get(e).r;
-                if ((x < xMax && x > xMin) && (y < yMax && y > yMin))
-                {
-                    console.log(`drawing tile ${mapTilePos.get(e).name}`);
-                    drawTile(data, mapTilePos.get(e).name, c);
+        if (canvasState == 'map')
+            drawMapGraph(200, data.world.edges);
+
+        else if (canvasState == 'join') {
+            drawMapGraph(200, data.world.edges)
+            c.fillStyle = "black";
+            c.font = "48px Caveat";
+            c.fillText("Click a tile to join!", 100, 100);
+        }
+        else
+            drawTile(data, currentTile, c);
+
+        window.addEventListener('click', function (event) {
+            if (canvasState == 'map') {
+                let canvasPos = getCanvasPos(event);
+                currentTile = getClickedTile(canvasPos.x, canvasPos.y);
+
+                if (currentTile) {
+                    console.log(`drawing tile ${currentTile}`);
+                    currentTile = currentTile;
+                    canvasState = 'tile';
+                    drawTile(data, currentTile, c);
                 }
             }
-        }
+            if (canvasState == 'join') {
+                let canvasPos = getCanvasPos(event);
+                currentTile = getClickedTile(canvasPos.x, canvasPos.y);
+                if (currentTile) {
+                    let formData = new FormData();
+                    formData.append('tileName', currentTile);
+                    canvasState = 'tile';
+                    fetch(
+                        '/api/game/join',
+                        {
+                            method: 'POST',
+                            body: formData
+                        }
+                    )
+                }
+            }
+        })
     })
-})
+}, 2000)
 
 //TODO add map drawing function and onclick to select tiles.

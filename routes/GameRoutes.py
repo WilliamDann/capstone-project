@@ -21,12 +21,49 @@ def dict_decode(inst):
         return None
 
 def GameRoutes(app: Flask, db: Database, game: Game):
+    @app.post('/api/game/debugSpawn')
+    def debugSpawn():
+        objType = ObjectType[request.form.get('objType')]
+        health  = request.form.get('health')
+        x       = request.form.get('x')
+        y       = request.form.get('y')
+        tile    = request.form.get('tile')
+        owner   = request.form.get('owner')
+
+        if not objType:
+            return "objType must be defined", 400
+        if not tile:
+            return "tile must be defined", 400
+        obj = Object(objType)
+        obj.position.tile = tile
+
+        if health:
+            obj.health      = health
+        if x:
+            obj.position.x  = x
+        if y:
+            obj.position.y  = y
+        if owner:
+            obj.owner       = owner
+
+        game.world.addObject(obj)
+        return "Object spawned", 200
+
     @app.get('/play')
     def playPage():
+        user = read_session(db)
+        if not user:
+            return render_template("User/signin.html")
         return render_template('Play.html', game=dumps(game.__dict__, default=dict_decode))
 
     @app.get('/api/game/')
     def getGame():
+        user     = read_session(db)
+        if not user:
+            return render_template("Error.html", error="Authentication error"), 400
+        game.user = user
+        game.user['pwHash'] = None
+
         return dumps(game.__dict__, default=dict_decode), 200
 
     @app.get('/api/userContext')
@@ -64,7 +101,7 @@ def GameRoutes(app: Flask, db: Database, game: Game):
             return render_template("Error.html", error=f"Tile name {tileName} was not found"), 404
 
         # Make sure tile does not already have a station
-        stationsInTile = game.world.findObjects(lambda x: x.position.tile == tile.name and x.objType != ObjectType.Station)
+        stationsInTile = game.world.findObjects(lambda x: x.position.tile == tile.name and x.objType == ObjectType.Station)
         if len(stationsInTile) != 0:
             return render_template("Error.html", error=f"Tile {tileName} must not contain another station"), 400
 
