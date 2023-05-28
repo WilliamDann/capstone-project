@@ -52,10 +52,12 @@ function makeStars(count, xMin, xMax, yMin, yMax) {
 }
 
 function star(s, c) {
-    let count = 0
+    let count = 0;
+    let bright = 0;
     for (let i = 0; i < s.length; i++) {
         c.beginPath();
-        c.fillStyle = 'white';
+        bright = Math.floor(Math.random()* (100 - 50) + 50) / 100;
+        c.fillStyle = 'rgba(255, 255, 255, ' + bright + ')';
         const next = s[i];
         if (count%15 == 0) {
             c.fillRect(next.x, next.y, 2, 2);
@@ -154,7 +156,6 @@ function asteroid(objID, c) {
 
 function drawTile(data, tile, c) {
     //obj = Object.values(data.world.objects).filter(x => x.position.tileName == tileName);
-    canvasState = 'tile';
     c.clearRect(0, 0, 9999, 9999);
     c.stroke();
     c.fillStyle = 'black';
@@ -212,13 +213,12 @@ function drawMapTile(x, y, radius, name) {
 
     let s = makeStars(25, x - radius, x + radius, y - radius, y + radius);
     star(s, c);
-
+    c.fillStyle = 'white';
     c.font = "15px Caveat";
     c.fillText(name, x - radius, y + 5);
 }
 
 function drawMapGraph(radius, edges) {
-    canvasState = 'map';
     const set = {};
     const c = getCanvas();
 
