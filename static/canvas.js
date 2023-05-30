@@ -33,7 +33,8 @@ function makeSeed(str) {
 }
 
 function makeStars(count, xMin, xMax, yMin, yMax) {
-
+    let min = 250
+    if (canvasState == 'map') min = 10
     const out = [];
     let strSeed = 'map';
     if (currentTile)
@@ -41,7 +42,7 @@ function makeStars(count, xMin, xMax, yMin, yMax) {
 
     const seed = makeSeed(strSeed);
     const rng = new RNG(seed);
-    for (let i = 0; i < rng.nextRange(0, count); i++) {
+    for (let i = 0; i < rng.nextRange(min, count); i++) {
         const s = {
             x: (rng.nextRange(0, 100) / 100) * (xMax - xMin) + xMin,
             y: (rng.nextRange(0, 100) / 100) * (yMax - yMin) + yMin
