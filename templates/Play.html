@@ -15,8 +15,7 @@ Play
     const data = JSON.parse(dataStr);
     console.log(data);
 
-    function mapButtonClick()
-    {
+    function mapButtonClick() {
         // TODO toggle back to current tile if on map
         let c = getCanvas();
         c.clearRect(0, 0, 9999, 9999);
@@ -26,7 +25,14 @@ Play
     }
 </script>
 <p class="">Play Page</p>
-<button onclick = "mapButtonClick()">Map</button>
+<button onclick="mapButtonClick()">Map</button>
 <canvas width="1000" height="1000" class="border-2" id="gameCanvas"></canvas>
+
+<form method="POST" action="/api/user/updateCode">
+    <label>Enter your code here: </label><br /><br />
+    <textarea name="userCode" rows="10" cols="50"></textarea>
+    <br><br>
+    <input type="submit" value="Save">
+</form>
 
 {% endblock %}
