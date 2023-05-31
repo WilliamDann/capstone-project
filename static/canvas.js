@@ -232,10 +232,24 @@ function drawMapGraph(radius, edges) {
 
     // add tile to the set
     let union = (tile) => {
-        let angle = (gen.nextRange(0, 100) / 100) * Math.PI * 2;
-        let tileRadius = (gen.nextRange(0, 100) / 100) * radius + (radius / 3);
-        let x = (Math.cos(angle) * tileRadius) + (radius * 2);
-        let y = (Math.sin(angle) * tileRadius) + (radius * 2);
+        let search = true;
+        let angle;
+        let tileRadius;
+        let x;
+        let y;
+        while(search){
+            angle = (gen.nextRange(0, 100) / 100) * Math.PI * 2;
+            tileRadius = (gen.nextRange(0, 100) / 100) * radius + (radius / 3);
+            x = (Math.cos(angle) * tileRadius) + (radius * 2);
+            y = (Math.sin(angle) * tileRadius) + (radius * 2);
+            let count = 0
+            for (let t of mapTilePos.values()){
+                if ((t.x > x - 75 && t.x < x + 75) && (t.y > y - 75 && t.y < y + 75)) count++;
+                console.log(t.x + "--" + t.y)
+            }
+            if (count == 0) search = false;
+        }
+
 
         let drawnTileRadius = 20;
         drawMapTile(x, y, drawnTileRadius, tile);
@@ -316,10 +330,13 @@ setInterval(() => {
         if (canvasState != 'join' && !userHasObjects(data))
             canvasState = 'join';
 
-        if (canvasState == 'map')
+        if (canvasState == 'map'){
+            mapTilePos.clear();
             drawMapGraph(200, data.world.edges);
+        }
 
         else if (canvasState == 'join') {
+            mapTilePos.clear();
             drawMapGraph(200, data.world.edges)
             c.fillStyle = "black";
             c.font = "48px Caveat";
