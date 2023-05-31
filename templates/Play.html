@@ -24,15 +24,27 @@ Play
         canvasState = 'map';
     }
 </script>
-<p class="">Play Page</p>
-<button onclick="mapButtonClick()">Map</button>
-<canvas width="1000" height="1000" class="border-2" id="gameCanvas"></canvas>
 
-<form method="POST" action="/api/user/updateCode">
-    <label>Enter your code here: </label><br /><br />
-    <textarea class="outline outline-offset-2 outline -1" name="userCode" rows="10" cols="50"></textarea>
-    <br><br>
-    <input type="submit" value="Save">
-</form>
+<div class="m-6 flex flex-col">
+    <div class="inline-block">
+        <button onclick="mapButtonClick()"
+            class="mb-2 rounded-md bg-purple-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-purple-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Map</button>
+    </div>
+    <div class="flex flex-row">
+        <div class="flex-shrink-0">
+            <canvas width="1000" height="1000" class="border border-gray-400" id="gameCanvas"></canvas>
+        </div>
+
+        <div class="ml-6 flex mr-6 flex-col justify-start">
+            <form method="POST" action="/api/user/updateCode" class="flex-grow">
+                <label>Enter your code here: </label><br /><br />
+                <textarea class="border border-gray-400 flex-grow" name="userCode" rows="20" cols="60"></textarea>
+                <br><br>
+                <input type="submit" value="Save"
+                    class="rounded-md bg-purple-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-purple-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+            </form>
+        </div>
+    </div>
+</div>
 
 {% endblock %}

@@ -57,14 +57,14 @@ function star(s, c) {
     let bright = 0;
     for (let i = 0; i < s.length; i++) {
         c.beginPath();
-        bright = Math.floor(Math.random()* (100 - 50) + 50) / 100;
+        bright = Math.floor(Math.random() * (100 - 50) + 50) / 100;
         c.fillStyle = 'rgba(255, 255, 255, ' + bright + ')';
         const next = s[i];
-        if (count%15 == 0) {
+        if (count % 15 == 0) {
             c.fillRect(next.x, next.y, 2, 2);
             count = 0;
-        }        
-        if (count%20 == 0) {
+        }
+        if (count % 20 == 0) {
             c.fillRect(next.x, next.y, 3, 3);
             count = 0;
         }
@@ -183,13 +183,12 @@ function drawTile(data, tile, c) {
     }
 }
 
-function drawHealthBar(x, y, health=100)
-{
+function drawHealthBar(x, y, health = 100) {
     c.beginPath();
 
     last = c.fillStyle;
     c.fillStyle = 'red';
-    c.rect((x*XMod)-(health / 4)+9, (y*YMod)+25, health / 2, 2)
+    c.rect((x * XMod) - (health / 4) + 9, (y * YMod) + 25, health / 2, 2)
     c.fill();
 
     c.fillStyle = last;
