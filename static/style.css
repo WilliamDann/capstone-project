@@ -1,0 +1,25 @@
+@keyframes animated-text {
+    0% {
+        background-position: 0% 0%;
+    }
+
+    33.33% {
+        background-position: 33.33% 0%;
+    }
+
+    66.66% {
+        background-position: 66.66% 0%;
+    }
+
+    100% {
+        background-position: 100% 0%;
+    }
+}
+
+.text-2xl.animated {
+    background-image: linear-gradient(to right, purple, black, gray);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: animated-text 6s linear infinite;
+    background-size: 300% auto;
+}
