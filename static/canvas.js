@@ -319,12 +319,20 @@ const OffsetX = elem.offsetLeft;
 const OffsetY = elem.offsetTop;
 let mapTilePos = new Map();
 const canvas = document.querySelector('canvas');
+const codePanel = document.querySelector('#userCode')
+let resetCode   = true;
 
 // Update game data every second
 // TODO use Websockets to allow realtime communication
 setInterval(() => {
     fetch('/api/game').then(response => response.json()).then(json => {
         let data = json;
+
+        if (resetCode)
+        {
+            codePanel.value = data.user.userCode;
+            resetCode = false;
+        }
 
         if (canvasState != 'join' && !userHasObjects(data))
             canvasState = 'join';
